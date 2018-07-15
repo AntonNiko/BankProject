@@ -20,4 +20,5 @@ urlpatterns = [
     path("publicbanking/", include("publicbanking.urls")),
     path("admin/", admin.site.urls),
     path("/", admin.site.urls),
+    path("", admin.site.urls),
 ]
