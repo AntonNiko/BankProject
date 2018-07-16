@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Public Banking</title>
+</head>
+<body>
+    <ul>
+      {% for account in accounts %}
+      <li><a href="#">{{ account.account_number }}</a></li>
+      {% endfor %}
+    </ul>
+</body>
+</html>
