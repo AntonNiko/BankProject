@@ -13,7 +13,7 @@ class Account(models.Model):
     ## TODO: Add more information about accounts
 
     def __str__(self):
-        return self.account_type
+        return self.account_type + "-" + str(self.account_transitNum) + "-" + str(self.account_number)
 
 class Transaction(models.Model):
     transaction_id = models.IntegerField()
@@ -21,9 +21,9 @@ class Transaction(models.Model):
     transaction_time = models.DateTimeField("transaction time")
     transaction_name = models.CharField(max_length=200)
     
-    transaction_origin = models.IntegerField()
+    transaction_origin = models.ForeignKey(Account, on_delete=models.CASCADE)
     transaction_destination = models.IntegerField()
     ## TODO: Add more information about transactions
 
     def __str__(self):
-        return self.transaction_name
+        return str(self.transaction_id)

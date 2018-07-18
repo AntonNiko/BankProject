@@ -1,13 +1,145 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Public Banking</title>
+	<meta name="keywords" content="" />
+    <meta name="description" content="" />
+	
+	<link href="{% static 'publicbanking/css/bootstrap.css' %}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="{% static 'publicbanking/js/bootstrap.js' %}"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	
 </head>
 <body>
-    <ul>
-      {% for account in accounts %}
-      <li><a href="#">{{ account.account_number }}</a></li>
-      {% endfor %}
-    </ul>
+
+<div id="tooplate_wrapper">
+	<div id="tooplate_header">
+    	<div id="site_title">
+        	<h1><a href="#">Curtain Store</a></h1>
+        </div>
+        
+        <div id="tooplate_menu" class="ddsmoothmenu">
+            <ul>
+                <li><a href="index.html" class="selected">Home</a></li>
+                <li><a href="about.html">About</a>
+                    <ul>
+                        <li><a href="#">Sub menu 1</a></li>
+                        <li><a href="#">Sub menu 2</a></li>
+                        <li><a href="#">Sub menu 3</a></li>
+                    </ul>
+                </li>
+                <li><a href="portfolio.html">Portfolio</a>
+                    <ul>
+                        <li><a href="#">Sub menu 1</a></li>
+                        <li><a href="#">Sub menu 2</a></li>
+                        <li><a href="#">Sub menu 3</a></li>
+                        <li><a href="#">Sub menu 4</a></li>
+                        <li><a href="#">Sub menu 5</a></li>
+                   </ul>
+              </li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <br style="clear: left" />
+        </div> <!-- end of menu -->
+    
+    	<div id="tooplate_search">
+            <form action="#" method="get">
+              <input type="text" value="Search" name="keyword" id="keyword" title="keyword" onfocus="clearText(this)" onblur="clearText(this)" class="txt_field" />
+              <input type="submit" name="Search" value="" alt="Search" id="searchbutton" title="Search" class="sub_btn"  />
+            </form>
+        </div>
+    </div>
+    
+    <div id="tooplate_main">
+    	<div id="tooplate_sidebar">
+        	<div class="sb_box">
+            	<h3>Categories</h3>
+                <ul class="sb_menu">
+                    <li><a href="#">Donec tempor dapibus</a></li>
+                    <li><a href="#">Etiam tempus quam odio</a></li>
+                    <li><a href="#">Nullam ornare vulputate</a></li>
+                    <li><a href="#">Pellentesque eget magna</a></li>
+                    <li><a href="#">Vestibulum erat erat</a></li>
+                </ul>
+			</div>
+            <div class="sb_box">
+            	<h3>Twitter</h3>
+            	<ul class="twitter_post">
+          			<li>Suspendisse at scelerisque urna. Aenean tincidunt massa in tellus varius ultricies. <a href="#">http://bit.ly/13IwZO</a></li>
+                    <li>Proin dignissim, diam nec <a href="#">@tooplate</a> enim lorem tempus orci, ac imperdiet ante purus in justo.</li>
+                    <li>Fusce cursus consectetur ultricies <a href="#">#freetemplate</a> uis nisl lectus, mattis ut elementum id, fermentum sed erat. </li>
+              	</ul>
+          	</div>
+        	<div class="sb_box">
+            	<h3>Get In Touch</h3>
+				<a href="#"><img src="images/facebook-32x32.png" title="facebook" alt="facebook" /></a>
+                <a href="#"><img src="images/flickr-32x32.png" title="flickr" alt="flickr" /></a>
+                <a href="#"><img src="images/twitter-32x32.png" title="twitter" alt="twitter" /></a>
+                <a href="#"><img src="images/youtube-32x32.png" title="youtube" alt="youtube" /></a>
+            </div>
+        </div> <!-- end of sidebar -->
+        
+        	<div id="slider" class="nivoSlider">
+                <img src="images/slider/01.jpg" alt="" title="Donec sit amet gravida quam ut condimentum risus." />
+                <a href="http://dev7studios.com"><img src="images/slider/02.jpg" alt="" title="Aenean tortor vel porttitor volutpat." /></a>
+                <img src="images/slider/03.jpg" alt="" />
+                <img src="images/slider/04.jpg" alt="" title="#htmlcaption" />
+            </div>
+            <div id="htmlcaption" class="nivo-html-caption">
+                <strong>This</strong> is an example of a HTML caption with <a href="#">a link</a>.
+            </div>
+
+            <script type="text/javascript" src="js/jquery-1.4.3.min.js"></script>
+            <script type="text/javascript" src="js/jquery.nivo.slider.js"></script>
+            <script type="text/javascript">
+            $(window).load(function() {
+                $('#slider').nivoSlider();
+            });
+            </script>
+        
+    	<div id="tooplate_content">
+        	
+		<div class="col_2 float_l">
+                <h2>Account Login</h2>
+				<!-- Account information -->
+				    <ul>
+					  {% for account in accounts %}
+					  <li><a href="#">{{ account.account_number }}</a></li>
+					  {% endfor %}
+					</ul>
+                <div class="cleaner h20"></div>
+                <a href="#" class="more">More</a>
+                <br class="cleaner" />
+            </div>
+            
+      <div class="col_2 float_r">
+                <h2>Latest Work</h2>
+                <img src="images/tooplate_image_05.png" alt="Image 05" class="image_frame" />
+                <p><em>Nulla at est sit amet nibh faucibus molestie vitae ac velit. Fusce ac diam tincidunt sit amet.</em></p>
+                <a href="#" class="more">More</a>
+                
+				<div class="hr_divider"></div>
+                
+          <h2>Testimonial</h2>
+                <p class="testimonial">Nunc sit amet tortor et metus faucibus imperdiet non id orci.</p>
+                <div class="cleaner"></div>
+                <cite>Candy <a href="#"><span> - Web Designer</span></a></cite>
+				<div class="cleaner h10"></div>
+            <a href="#" class="more">More</a>
+            </div>
+        </div> 
+        <!-- end of main -->
+        
+        <div class="cleaner"></div>
+    </div> <!-- end of main -->	
+    
+    <div id="tooplate_footer">
+		Copyright © 2048 Company Name
+    </div>
+</div>
+
 </body>
 </html>
