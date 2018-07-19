@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from django.http import Http404
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -10,7 +11,8 @@ from .models import Transaction
 # Create your views here.
 def index(request):
     accounts = Account.objects.all()
-    context = {"accounts": accounts}
+    login_form = LoginForm()
+    context = {"accounts": accounts, "login_form": login_form}
     return render(request, "publicbanking/index.html", context)
 
 def accounts_default(request):
@@ -35,8 +37,15 @@ def login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            return HttpResponse("Logged in")
-    return HttpResponse("Failed to login")
+            card_number = form.cleaned_data["card_number"]
+            card_password = form.cleaned_data["card_password"]
+
+            user = authenticate(username=card_number, password=card_password)
+            if user is None:
+                return HttpResponse("Login failed")
+            else:
+                return HttpResponse("Login successful")
+    return HttpResponse("Invalid HTTP Login Request")
 
 
 
