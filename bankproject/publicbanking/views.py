@@ -30,13 +30,13 @@ def accounts(request, account_number):
 
     ## Fetch all transactions relating to account number
     try:
-        transactions_debit = Transaction.objects.get(transaction_origin=account_number)
+        transactions_debit = Transaction.objects.filter(transaction_origin=account_number)
     except Transaction.DoesNotExist:
         transactions_debit = []
     try:
-        transactions_credit = Transaction.objects.get(transaction_destination=account_number)
+        transactions_credit = Transaction.objects.filter(transaction_destination=account_number)
     except Transaction.DoesNotExist:
-        trnasactions_credit = []
+        transactions_credit = []
     
     context = {"account_number": account_number, "transactions_debit": transactions_debit, "transactions_credit": transactions_credit}
     return render(request, "publicbanking/account.html", context)
