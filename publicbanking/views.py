@@ -15,8 +15,9 @@ def index(request):
     return render(request, "publicbanking/index.html", context)
 
 def accounts_overview(request):
+    print("lol")
     if not request.user.is_authenticated:
-        redirect("/publicbanking/", permament=True)
+        return redirect("publicbanking", permament=True)
     
     accounts = Account.objects.filter(account_card=request.user.username)
     context = {"accounts":accounts}
@@ -62,7 +63,7 @@ def login_user(request):
             user = authenticate(request, username=card_number, password=card_password)
             if user is not None:
                 login(request, user)
-                return redirect("/publicbanking/accounts", permanent=True)
+                return redirect("publicbanking/accounts", permanent=True)
             else:
                 return HttpResponse("Login failed.")
     return HttpResponse("Invalid HTTP Login Request")
@@ -70,10 +71,5 @@ def login_user(request):
 ## Logout request (no HTML code visual)
 def logout_user(request):
     logout(request)
-    return redirect("/publicbanking/", permanent=True)
-
-        
-        
-
- #a = Account.objects.get(account_number =4506445697840187)
+    return redirect("publicbanking/accounts", permanent=True)
 
