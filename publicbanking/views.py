@@ -10,24 +10,26 @@ from .models import Transaction
 
 # Create your views here.
 def index(request):
+    print("index")
     login_form = LoginForm()
     context = {"login_form": login_form}
     return render(request, "publicbanking/index.html", context)
 
 def accounts_overview(request):
-    print("lol")
-    if not request.user.is_authenticated:
-        return redirect("publicbanking", permament=True)
+    print("accounts_overview")
+##    if not request.user.is_authenticated:
+##        return redirect("/publicbanking", permament=True)
     
     accounts = Account.objects.filter(account_card=request.user.username)
     context = {"accounts":accounts}
     return render(request, "publicbanking/accounts_overview.html", context)
 
 def accounts(request, account_number):
-    if not request.user.is_authenticated:
-        redirect("/publicbanking/", permament=True)
-    if request.user.username != Account.objects.get(account_number=4570681).account_card:
-        redirect("/publicbanking/", permanent=True)
+    print("accounts")
+##    if not request.user.is_authenticated:
+##        redirect("/publicbanking/", permament=True)
+##    if request.user.username != Account.objects.get(account_number=4570681).account_card:
+##        redirect("/publicbanking/", permanent=True)
 
     ## Fetch all transactions relating to account number
     try:
@@ -43,9 +45,11 @@ def accounts(request, account_number):
     return render(request, "publicbanking/account.html", context)
 
 def transactions(request):
+    print("transactions")
     return HttpResponse("This is the <h1>page</h1> that displays each eaccount's transaction history")
 
 def transactions_specific(request, request_id):
+    print("transactions_specific")
     try:
         transaction = Transaction.get(transaction_id = request_id)
     except Transaction.DoesNotExist:
@@ -63,13 +67,12 @@ def login_user(request):
             user = authenticate(request, username=card_number, password=card_password)
             if user is not None:
                 login(request, user)
-                return redirect("publicbanking/accounts", permanent=True)
+                return redirect("/publicbanking/accounts", permanent=True)
             else:
                 return HttpResponse("Login failed.")
     return HttpResponse("Invalid HTTP Login Request")
 
-## Logout request (no HTML code visual)
 def logout_user(request):
     logout(request)
-    return redirect("publicbanking/accounts", permanent=True)
+    return redirect("/publicbanking/", permanent=True)
 
