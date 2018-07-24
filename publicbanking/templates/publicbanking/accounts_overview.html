@@ -10,7 +10,6 @@
 	<link href="{% static 'publicbanking/css/bootstrap.css' %}" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="{% static 'publicbanking/js/bootstrap.js' %}"></script>
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-	
 </head>
 <body>
 <div class="container">
@@ -61,6 +60,13 @@
         </div>
 		{% endfor %}
       </div>
+	  
+	  <div class="row mb-2">
+			<form action="/publicbanking/transfer_request/" method="POST">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-primary">Request Transfer</button>
+			</form>
+	  </div>
     </div>	
 </body>
 </html>
