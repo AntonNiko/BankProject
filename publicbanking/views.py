@@ -5,13 +5,11 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
-from decimal import Decimal
-
 from .forms import LoginForm, RequestForm
+from .models import Account, Transaction
 
-from .models import Account
-from .models import Transaction
 from datetime import datetime
+from decimal import Decimal
 
 import random
 
