@@ -3,11 +3,17 @@ from django.contrib.auth import authenticate
 from django.http import Http404, HttpResponse
 from django.db.models import Q
 from django.shortcuts import render, redirect
+from django.utils import timezone
+
+from decimal import Decimal
 
 from .forms import LoginForm, RequestForm
 
 from .models import Account
 from .models import Transaction
+from datetime import datetime
+
+import random
 
 # Create your views here.
 def index(request):
@@ -53,11 +59,33 @@ def transfer_request(request):
         return redirect("/publicbanking")
 
     form = RequestForm(request.POST)
-    if form.is_valid():
-        request_amount = form.cleaned_data["request_amount"]
-        request_origin = form.cleaned_data["request_origin"]
-        request_destination = form.cleaned_data["request_destination"]
-        request_frequency = form.cleaned_data["request_frequency"]
+    if not form.is_valid():
+        return redirect("/publicbanking")
+    
+    request_amount = form.cleaned_data["request_amount"]
+    request_origin = form.cleaned_data["request_origin"]
+    request_destination = form.cleaned_data["request_destination"]
+    request_frequency = form.cleaned_data["request_frequency"]
+
+    ## Process transaction
+    transaction = Transaction(transaction_id=random.randrange(5),
+                              transaction_amount = request_amount,
+                              transaction_time = timezone.now(),
+                              transaction_name = "Internet Transfer - Test",
+                              transaction_origin = request_origin,
+                              transaction_destination = request_destination)
+
+    account_origin = Account.objects.get(account_number=request_origin)
+    account_destination = Account.objects.get(account_number=request_destination)
+
+    account_origin.account_balance = account_origin.account_balance - Decimal(request_amount)
+    account_origin.save()
+    account_destination.account_balance = account_destination.account_balance - Decimal(request_amount)
+    account_destination.save()
+    
+    ## Adjust balance for respective accounts
+    transaction.save()
+    
     return HttpResponse("This page is where all online transfer requests will be processed")
 
 ## Login request (no HTML code visual)
