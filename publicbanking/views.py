@@ -26,7 +26,7 @@ def accounts_overview(request):
     if not request.user.is_authenticated:
         return redirect("/publicbanking/")
 
-    request_form = RequestForm()
+    request_form = RequestForm(request.POST, request=request)
     accounts = Account.objects.filter(account_card=request.user.username)
     context = {"accounts":accounts, "request_form":request_form}
     return render(request, "publicbanking/accounts_overview.html", context)
@@ -65,16 +65,16 @@ def transfer_request(request):
     request_destination = form.cleaned_data["request_destination"]
     request_frequency = form.cleaned_data["request_frequency"]
 
+    account_origin = Account.objects.get(account_number=request_origin)
+    account_destination = Account.objects.get(account_number=request_destination)
+
     ## Process transaction
     transaction = Transaction(transaction_id=random.randrange(5),
                               transaction_amount = request_amount,
-                              transaction_time = timezone.now(),
+                              transaction_time = timezone.nosw(),
                               transaction_name = "Internet Transfer - Test",
                               transaction_origin = request_origin,
                               transaction_destination = request_destination)
-
-    account_origin = Account.objects.get(account_number=request_origin)
-    account_destination = Account.objects.get(account_number=request_destination)
 
     account_origin.account_balance = account_origin.account_balance - Decimal(request_amount)
     account_origin.save()
@@ -84,7 +84,7 @@ def transfer_request(request):
     ## Adjust balance for respective accounts
     transaction.save()
     
-    return HttpResponse("This page is where all online transfer requests will be processed")
+    return redirect("/publicbanking/accounts")
 
 ## Login request (no HTML code visual)
 def login_user(request):

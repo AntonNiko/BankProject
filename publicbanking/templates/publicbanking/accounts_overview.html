@@ -64,8 +64,20 @@
 			<form action="/publicbanking/transfer_request/" method="POST">
 				{% csrf_token %}
 				{{ request_form }}
-				<button type="submit" class="btn btn-primary">Request Transfer</button>
+				<button type="submit"0 class="btn btn-primary">Request Transfer</button>
 			</form>
+	  </div>
+	  
+	  <div class="card" style="width: 18rem;">
+		  <div class="card-body">
+			<h5 class="card-title">Account Details</h5>
+			<h6 class="card-subtitle mb-2 text-muted">Address</h6>
+			<p class="card-text">// Address goes here</p>
+			<h6 class="card-subtitle mb-2 text-muted">Phone</h6>
+			<p class="card-text">// Phone goes here</p>
+			<h6 class="card-subtitle mb-2 text-muted">E-mail</h6>
+			<p class="card-text">// E-mail goes here</p>
+		  </div>
 	  </div>
     </div>	
 </body>
