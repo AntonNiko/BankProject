@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Client(models.Model):
+    client_id = models.CharField(primary_key=True, max_length=50, default=None)
     client_name = models.CharField(max_length=200)
     client_streetname = models.CharField(max_length=200)
     client_housenum = models.IntegerField()
@@ -13,6 +14,7 @@ class Client(models.Model):
         return str(self.client_name) +"-"+ str(self.client_phone) +"-"+ str(self.client_email)
 
 class Account(models.Model):
+    account_holder = models.ForeignKey("Client", on_delete=models.CASCADE)
     account_transitNum = models.IntegerField()
     account_instNum = models.IntegerField()
     account_number = models.IntegerField()
@@ -20,7 +22,6 @@ class Account(models.Model):
     account_balance = models.DecimalField(max_digits=20, decimal_places=2)
     account_card = models.IntegerField(default=None, null=True, blank=True)
     
-    account_holder = models.ManyToManyField(Client)
     def __str__(self):
         return self.account_type + "-"+ str(self.account_instNum) +"-"+ str(self.account_transitNum) + "-" + str(self.account_number)
 

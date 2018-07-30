@@ -4,6 +4,7 @@ from django.http import Http404, HttpResponse
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django import forms
 
 from .forms import LoginForm, RequestForm
 from .models import Account, Transaction
@@ -12,6 +13,7 @@ from datetime import datetime
 from decimal import Decimal
 
 import random
+import json
 
 # Create your views here.
 def index(request):
@@ -26,9 +28,15 @@ def accounts_overview(request):
     if not request.user.is_authenticated:
         return redirect("/publicbanking/")
 
-    request_form = RequestForm(request.POST, request=request)
+    account_choices = []
+    card_account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
+    account_holder_accounts = list(Account.objects.filter(account_holder = card_account_holder))
+    for i in range(len(account_holder_accounts)):
+        account_choices.append((account_holder_accounts[i]))
+
+    request_form = RequestForm()
     accounts = Account.objects.filter(account_card=request.user.username)
-    context = {"accounts":accounts, "request_form":request_form}
+    context = {"accounts":accounts, "request_form":request_form, "account_choices":account_choices}
     return render(request, "publicbanking/accounts_overview.html", context)
 
 def account(request,num):
@@ -59,10 +67,11 @@ def transfer_request(request):
     form = RequestForm(request.POST)
     if not form.is_valid():
         return redirect("/publicbanking")
-    
+
+    post_data = dict(request.POST.items())
     request_amount = form.cleaned_data["request_amount"]
-    request_origin = form.cleaned_data["request_origin"]
-    request_destination = form.cleaned_data["request_destination"]
+    request_origin = post_data["request_origin"]
+    request_destination = post_data["request_destination"]
     request_frequency = form.cleaned_data["request_frequency"]
 
     account_origin = Account.objects.get(account_number=request_origin)
@@ -71,10 +80,10 @@ def transfer_request(request):
     ## Process transaction
     transaction = Transaction(transaction_id=random.randrange(5),
                               transaction_amount = request_amount,
-                              transaction_time = timezone.nosw(),
+                              transaction_time = timezone.now(),
                               transaction_name = "Internet Transfer - Test",
-                              transaction_origin = request_origin,
-                              transaction_destination = request_destination)
+                              transaction_origin = account_origin,
+                              transaction_destination = account_destination)
 
     account_origin.account_balance = account_origin.account_balance - Decimal(request_amount)
     account_origin.save()
