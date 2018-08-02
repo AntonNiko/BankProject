@@ -31,8 +31,8 @@ class Transaction(models.Model):
     transaction_time = models.DateTimeField("transaction time")
     transaction_name = models.CharField(max_length=200)
     
-    transaction_origin = models.ManyToManyField(Account, related_name = "Origin")
-    transaction_destination = models.ManyToManyField(Account, related_name = "Destination")
+    transaction_origin = models.ManyToManyField(Account, related_name = "transaction_origin+")
+    transaction_destination = models.ManyToManyField(Account, related_name = "transaction_destination+")
 
     def __str__(self):
         return str(self.transaction_id)+"-"+str(self.transaction_origin)+"-"+str(self.transaction_destination)

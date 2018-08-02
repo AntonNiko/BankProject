@@ -39,7 +39,7 @@ def accounts_overview(request):
     context = {"accounts":accounts, "request_form":request_form, "account_choices":account_choices}
     return render(request, "publicbanking/accounts_overview.html", context)
 
-def account(request,num):
+def account(request, num):
     if not request.user.is_authenticated:
         return redirect("/publicbanking/")
     if request.user.username != str(Account.objects.get(account_number=num).account_card):
@@ -50,11 +50,21 @@ def account(request,num):
     except Account.DoesNotExist:
         account = None
     try:
-        transactions = Transaction.objects.filter(Q(transaction_origin=num) | Q(transaction_destination=num))
+        transactions = Transaction.objects.filter(Q(transaction_origin=Account.objects.get(account_number=num)) | Q(transaction_destination=Account.objects.get(account_number=num)))
     except Transaction.DoesNotExist:
-        transactions = [] 
+        transactions = []
 
-    context = {"account": account, "transactions": transactions}
+    ## Modify transactions variable to display account numbers in place of QuerySet
+    transactions_modified = []
+    for i in range(len(transactions)):
+        transactions_modified.append({})
+        transactions_modified[i]["transaction_id"] = transactions[i].transaction_id
+        transactions_modified[i]["transaction_amount"] = transactions[i].transaction_amount
+        transactions_modified[i]["transaction_time"] = transactions[i].transaction_time
+        transactions_modified[i]["transaction_name"] = transactions[i].transaction_name
+        transactions_modified[i]["transaction_origin"] = list(transactions[i].transaction_origin.all())[0].account_number
+        transactions_modified[i]["transaction_destination"] = list(transactions[i].transaction_destination.all())[0].account_number
+    context = {"account": account, "transactions": transactions_modified}
     return render(request, "publicbanking/account.html", context)
 
 
@@ -78,12 +88,14 @@ def transfer_request(request):
     account_destination = Account.objects.get(account_number=request_destination)
 
     ## Process transaction
-    transaction = Transaction(transaction_id=random.randrange(5),
+    transaction = Transaction.objects.create(transaction_id=random.randrange(500),
                               transaction_amount = request_amount,
                               transaction_time = timezone.now(),
-                              transaction_name = "Internet Transfer - Test",
-                              transaction_origin = account_origin,
-                              transaction_destination = account_destination)
+                              transaction_name = "Internet Transfer - Test")
+    transaction.save()
+    transaction.transaction_origin.add(account_origin)
+    transaction.transaction_destination.add(account_destination)
+    
 
     account_origin.account_balance = account_origin.account_balance - Decimal(request_amount)
     account_origin.save()
@@ -91,7 +103,6 @@ def transfer_request(request):
     account_destination.save()
     
     ## Adjust balance for respective accounts
-    transaction.save()
     
     return redirect("/publicbanking/accounts")
 
