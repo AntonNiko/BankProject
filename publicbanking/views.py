@@ -9,11 +9,8 @@ from django import forms
 from .forms import LoginForm, RequestForm
 from .models import Account, Transaction
 
-from datetime import datetime
 from decimal import Decimal
-
 import random
-import json
 
 # Create your views here.
 def index(request):
