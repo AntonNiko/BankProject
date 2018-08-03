@@ -87,12 +87,16 @@
 	  <div class="card" style="width: 18rem;">
 		  <div class="card-body">
 			<h5 class="card-title">Account Details</h5>
-			<h6 class="card-subtitle mb-2 text-muted">Address</h6>
-			<p class="card-text">// Address goes here</p>
+			<h6 class="card-subtitle mb-2 text-muted">Street</h6>
+			<p class="card-text">{{ account_holder.client_housenum }} {{ account_holder.client_streetname }}</p>
+			<h6 class="card-subtitle mb-2 text-muted">City</h6>
+			<p class="card-text">{{ account_holder.client_city }}</p>
+			<h6 class="card-subtitle mb-2 text-muted">Postal Code</h6>
+			<p class="card-text">{{ account_holder.client_zipCode }}</p>
 			<h6 class="card-subtitle mb-2 text-muted">Phone</h6>
-			<p class="card-text">// Phone goes here</p>
+			<p class="card-text">{{ account_holder.client_phone }}</p>
 			<h6 class="card-subtitle mb-2 text-muted">E-mail</h6>
-			<p class="card-text">// E-mail goes here</p>
+			<p class="card-text">{{ account_holder.client_email }}</p>
 		  </div>
 	  </div>
     </div>	

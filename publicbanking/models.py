@@ -10,6 +10,7 @@ class Client(models.Model):
     client_name = models.CharField(max_length=200)
     client_streetname = models.CharField(max_length=200)
     client_housenum = models.IntegerField()
+    client_city = models.CharField(max_length=100)
     client_zipCode = models.CharField(max_length=6)
     client_phone = models.CharField(max_length=200)
     client_email = models.CharField(max_length=200)

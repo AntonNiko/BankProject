@@ -10,7 +10,7 @@ from .forms import LoginForm, RequestForm
 from .models import Account, Transaction
 
 from decimal import Decimal
-import random
+import random, re
 
 # Create your views here.
 def index(request):
@@ -34,20 +34,20 @@ def accounts_overview(request):
     logged in, then redirect to /publicbanking/ to login
     """
     
-    ## If user has been authenticated already, redirect
+    ## If user has not been authenticated, redirect
     if not request.user.is_authenticated:
         return redirect("/publicbanking/")
 
     ## Finds the account holder's name related to the card used for the login
     card_account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
     ## Finds all accounts associated with the card's account holder, to display in transfer request form
-    account_holder_accounts = list(Account.objects.filter(account_holder = card_account_holder))
-
+    account_holder_accounts = list(Account.objects.filter(account_holder = card_account_holder)) 
+    
     ## Transfer request form to display to user, to transfer money between accounts
     request_form = RequestForm()
     ## Finds all accounts associated with the account holder's card to display
     accounts = Account.objects.filter(account_card=request.user.username)
-    context = {"accounts":accounts, "request_form":request_form, "account_choices":account_holder_accounts}
+    context = {"accounts":accounts, "request_form":request_form, "account_choices":account_holder_accounts, "account_holder":card_account_holder}
     return render(request, "publicbanking/accounts_overview.html", context)
 
 def account(request, num):
@@ -155,19 +155,22 @@ def login_user(request):
 
     ## Fetch the information sent by the login form, in the POST request
     post_data = dict(request.POST.items())
-    ## TODO: change method to incorporate post-only request
-    if True:
-        card_number = post_data["card_number"]
-        card_password = post_data["card_password"]
+    ## If the card number contains any non-number entry, redirect back to login page
+    if re.search("[a-zA-Z]", post_data["card_number"]):
+        print("Letter found...")
+        return redirect("/publicbanking/")
+    
+    card_number = post_data["card_number"]
+    card_password = post_data["card_password"]
 
-        ## Authenticate user details
-        user = authenticate(request, username=card_number, password=card_password)
-        if user is not None:
-            ## Successful authentication, and login user to access their accounts
-            login(request, user)
-            return redirect("/publicbanking/accounts")
-        else:
-            return redirect("/publicbanking/")
+    ## Authenticate user details
+    user = authenticate(request, username=card_number, password=card_password)
+    if user is not None:
+        ## Successful authentication, and login user to access their accounts
+        login(request, user)
+        return redirect("/publicbanking/accounts")
+    else:
+        return redirect("/publicbanking/")
 
 def logout_user(request):
     """
