@@ -18,7 +18,6 @@ def index(request):
     Handles requests to /publicbanking/, by displaying a standard login page, or redirects
     the user to the accounts page if they are already logged in to the website
     """
-
     ## If user has been authenticated already, redirect
     if request.user.is_authenticated:
         return redirect("/publicbanking/accounts")
@@ -154,11 +153,12 @@ def login_user(request):
     if request.method != "POST":
         return redirect("/publicbanking/")
 
-    ## Fetch the information sent by the login form
-    form = LoginForm(request.POST)
-    if form.is_valid():
-        card_number = form.cleaned_data["card_number"]
-        card_password = form.cleaned_data["card_password"]
+    ## Fetch the information sent by the login form, in the POST request
+    post_data = dict(request.POST.items())
+    ## TODO: change method to incorporate post-only request
+    if True:
+        card_number = post_data["card_number"]
+        card_password = post_data["card_password"]
 
         ## Authenticate user details
         user = authenticate(request, username=card_number, password=card_password)

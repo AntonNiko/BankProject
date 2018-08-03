@@ -55,22 +55,19 @@
 	  <!-- Public banking login form widget -->
 	  <form action="/publicbanking/login_user/" method="POST">
 		{% csrf_token %}
-		{{ login_form }}
-		
-	  <!--
 		  <div class="form-group">
 			<label for="card_number">Card Number</label>
-			<input type="text" class="form-control" id="card_number" aria-describedby="emailHelp" placeholder="Enter email">
+			<input type="text" class="form-control" id="card_number" name="card_number">
 			<small id="emailHelp" class="form-text text-muted">Your information will always be secure with us.</small>
 		  </div>
 		  <div class="form-group">
 			<label for="card_password">Password</label>
-			<input type="password" class="form-control" id="card_password" placeholder="Password">
+			<input type="password" class="form-control" id="card_password" name="card_password">
 		  </div>
 		  <div class="form-check">
-			<input type="checkbox" class="form-check-input" id="remember_card">
-			<label class="form-check-label" for="remember_card">Remember card for future use?</label>
-		  </div>-->
+			<input type="checkbox" class="form-check-input" id="remember_card" name="remember_card">
+		 	<label class="form-check-label" for="remember_card">Remember card for future use?</label>
+		  </div>
 		  <button type="submit" class="btn btn-primary">Login</button>
 	   </form>
 
@@ -78,11 +75,10 @@
         <div class="col-md-6">
           <div class="card flex-md-row mb-4 box-shadow h-md-250">
             <div class="card-body d-flex flex-column align-items-start">
-              <strong class="d-inline-block mb-2 text-primary">World</strong>
+              <strong class="d-inline-block mb-2 text-primary">Our Offers</strong>
               <h3 class="mb-0">
-                <a class="text-dark" href="#">Featured post</a>
+                <a class="text-dark" href="#">Get $300 by opening a Chequing account with us!</a>
               </h3>
-              <div class="mb-1 text-muted">Nov 12</div>
               <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
               <a href="#">Continue reading</a>
             </div>
@@ -92,11 +88,10 @@
         <div class="col-md-6">
           <div class="card flex-md-row mb-4 box-shadow h-md-250">
             <div class="card-body d-flex flex-column align-items-start">
-              <strong class="d-inline-block mb-2 text-success">Design</strong>
+              <strong class="d-inline-block mb-2 text-success">Events</strong>
               <h3 class="mb-0">
                 <a class="text-dark" href="#">Post title</a>
               </h3>
-              <div class="mb-1 text-muted">Nov 11</div>
               <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
               <a href="#">Continue reading</a>
             </div>
