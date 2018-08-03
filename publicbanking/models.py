@@ -34,6 +34,19 @@ class Account(models.Model):
     def __str__(self):
         return self.account_type + "-"+ str(self.account_instNum) +"-"+ str(self.account_transitNum) + "-" + str(self.account_number)
 
+class AccountTypes(models.Model):
+    account_type_name = models.CharField(max_length=100)
+    account_free_transaction_len = models.IntegerField()
+    account_free_transaction_period = models.CharField(max_length=100)
+    account_website_transaction_fee = models.DecimalField(max_digits=10, decimal_places=2)
+    account_retail_transaction_fee = models.DecimalField(max_digits=10, decimal_places=2)
+    account_etransfer_transaction_fee = models.DecimalField(max_digits=10, decimal_places=2)
+    account_interest_rate = models.DecimalField(max_digits=10, decimal_places=5)
+
+    def __str__(self):
+        return str(self.account_type_name)
+
+
 class Transaction(models.Model):
     """
     Transaction model: Represents a transaction, which occurs between 2 accounts registered with
