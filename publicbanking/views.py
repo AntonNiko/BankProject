@@ -47,7 +47,12 @@ def accounts_overview(request):
     request_form = RequestForm()
     ## Finds all accounts associated with the account holder's card to display
     accounts = Account.objects.filter(account_card=request.user.username)
-    context = {"accounts":accounts, "request_form":request_form, "account_choices":account_holder_accounts, "account_holder":card_account_holder}
+    ## Calculate total balance to show user
+    balance = 0
+    for account in accounts:
+        balance+=account.account_balance
+
+    context = {"accounts":accounts, "total_balance":balance, "request_form":request_form, "account_choices":account_holder_accounts, "account_holder":card_account_holder}
     return render(request, "publicbanking/accounts_overview.html", context)
 
 def account(request, num):
@@ -104,21 +109,20 @@ def transfer_request(request):
     if request.method != "POST":
         return redirect("/publicbanking/accounts")
     if not request.user.is_authenticated:
-        return redirect("/publicbanking")
-
-    ## Fetch the information sent by the transfer request form page
-    form = RequestForm(request.POST)
-    if not form.is_valid():
-        return redirect("/publicbanking")
+        return redirect("/publicbanking/")
 
     ## Fetch information that was submitted with the form, but not as part of the Django
     ## Form object. (This was necessary to avoid displaying no accounts to transfer from
     ## in the form)
     post_data = dict(request.POST.items())
-    request_amount = form.cleaned_data["request_amount"]
+    request_amount = post_data["request_amount"]
     request_origin = post_data["request_origin"]
     request_destination = post_data["request_destination"]
-    request_frequency = form.cleaned_data["request_frequency"]
+    request_frequency = post_data["request_frequency"]
+
+    ## If origin and destinationa accounts are the same, cancel the transfer and redirect
+    if request_origin == request_destination:
+        return redirect("/publicbanking/accounts")
 
     ## Finds the origin and destination account objects for the transaction object,
     ## and update balances
@@ -137,7 +141,7 @@ def transfer_request(request):
     ## Update balances, and save the objects to their databases
     account_origin.account_balance = account_origin.account_balance - Decimal(request_amount)
     account_origin.save()
-    account_destination.account_balance = account_destination.account_balance - Decimal(request_amount)
+    account_destination.account_balance = account_destination.account_balance + Decimal(request_amount)
     account_destination.save()
     
     return redirect("/publicbanking/accounts")
