@@ -18,24 +18,12 @@ class Client(models.Model):
     def __str__(self):
         return str(self.client_name) +"-"+ str(self.client_phone) +"-"+ str(self.client_email)
 
-class Account(models.Model):
+class AccountType(models.Model):
     """
-    Account model: Represents a bank account, which is owned by one specific account holder
-    (can expand to joint accounts). Information stored includes the account's number and
-    transit number, balance, optional related bank card.
+    Account types: Represents a bank account type, which every Account object has to be related
+    to one account type. Information included in AccountTypes includes name, free transaction
+    information, transaction fees, and monthly interest rates
     """
-    account_holder = models.ForeignKey("Client", on_delete=models.CASCADE)
-    account_transitNum = models.IntegerField()
-    account_instNum = models.IntegerField()
-    account_number = models.IntegerField()
-    account_type = models.CharField(max_length=200)
-    account_balance = models.DecimalField(max_digits=20, decimal_places=2)
-    account_card = models.IntegerField(default=None, null=True, blank=True)
-    
-    def __str__(self):
-        return self.account_type + "-"+ str(self.account_instNum) +"-"+ str(self.account_transitNum) + "-" + str(self.account_number)
-
-class AccountTypes(models.Model):
     account_type_name = models.CharField(max_length=100)
     account_free_transaction_len = models.IntegerField()
     account_free_transaction_period = models.CharField(max_length=100)
@@ -46,6 +34,23 @@ class AccountTypes(models.Model):
 
     def __str__(self):
         return str(self.account_type_name)
+
+class Account(models.Model):
+    """
+    Account model: Represents a bank account, which is owned by one specific account holder
+    (can expand to joint accounts). Information stored includes the account's number and
+    transit number, balance, optional related bank card.
+    """
+    account_holder = models.ForeignKey("Client", on_delete=models.CASCADE)
+    account_transitNum = models.IntegerField()
+    account_instNum = models.IntegerField()
+    account_number = models.IntegerField()
+    account_type = models.ManyToManyField(AccountType, related_name="account_type")
+    account_balance = models.DecimalField(max_digits=20, decimal_places=2)
+    account_card = models.IntegerField(default=None, null=True, blank=True)
+    
+    def __str__(self):
+        return str(self.account_instNum) +"-"+ str(self.account_transitNum) + "-" + str(self.account_number)
 
 
 class Transaction(models.Model):

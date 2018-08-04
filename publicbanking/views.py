@@ -7,7 +7,7 @@ from django.utils import timezone
 from django import forms
 
 from .forms import LoginForm, RequestForm
-from .models import Account, Transaction
+from .models import Account, Transaction, AccountType
 
 from decimal import Decimal
 import random, re
@@ -47,12 +47,21 @@ def accounts_overview(request):
     request_form = RequestForm()
     ## Finds all accounts associated with the account holder's card to display
     accounts = Account.objects.filter(account_card=request.user.username)
-    ## Calculate total balance to show user
+    ## Set account details in a list, such that every piece of information can be used
+    accounts_modified = []
     balance = 0
-    for account in accounts:
-        balance+=account.account_balance
+    for i in range(len(accounts)):
+        accounts_modified.append({})
+        accounts_modified[i]["account_holder"] = accounts[i].account_holder
+        accounts_modified[i]["account_transitNum"] = accounts[i].account_transitNum
+        accounts_modified[i]["account_instNum"] = accounts[i].account_instNum
+        accounts_modified[i]["account_number"] = accounts[i].account_number
+        accounts_modified[i]["account_type"] = list(accounts[i].account_type.values_list("account_type_name", flat=True))[0]
+        accounts_modified[i]["account_balance"] = accounts[i].account_balance
+        accounts_modified[i]["account_card"] = accounts[i].account_card
+        balance+=accounts[i].account_balance
 
-    context = {"accounts":accounts, "total_balance":balance, "request_form":request_form, "account_choices":account_holder_accounts, "account_holder":card_account_holder}
+    context = {"accounts":accounts_modified, "total_balance":balance, "request_form":request_form, "account_choices":account_holder_accounts, "account_holder":card_account_holder}
     return render(request, "publicbanking/accounts_overview.html", context)
 
 def account(request, num):
