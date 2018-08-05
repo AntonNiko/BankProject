@@ -46,7 +46,7 @@ class Account(models.Model):
     account_instNum = models.IntegerField()
     account_number = models.IntegerField()
     account_type = models.ManyToManyField(AccountType, related_name="account_type")
-    account_balance = models.DecimalField(max_digits=20, decimal_places=2)
+    account_balance = models.DecimalField (max_digits=20, decimal_places=2)
     account_card = models.IntegerField(default=None, null=True, blank=True)
     
     def __str__(self):

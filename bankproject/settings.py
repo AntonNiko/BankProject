@@ -52,6 +52,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'bankproject.urls'
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

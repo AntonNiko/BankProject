@@ -21,10 +21,14 @@ def index(request):
     ## If user has been authenticated already, redirect
     if request.user.is_authenticated:
         return redirect("/publicbanking/accounts")
+    if request.COOKIES.get("card_number") is not None:
+        card_remember = request.COOKIES.get("card_number")
+    else:
+        card_remember = ""
 
     ## Login form to display when page loads
     login_form = LoginForm()
-    context = {"login_form": login_form}
+    context = {"login_form": login_form, "card_remember": card_remember}
     return render(request, "publicbanking/index.html", context)
 
 def accounts_overview(request):
@@ -175,13 +179,20 @@ def login_user(request):
     
     card_number = post_data["card_number"]
     card_password = post_data["card_password"]
+    try:
+        card_remember = post_data["remember_card"]
+    except KeyError:
+        card_remember = None
 
     ## Authenticate user details
     user = authenticate(request, username=card_number, password=card_password)
     if user is not None:
         ## Successful authentication, and login user to access their accounts
         login(request, user)
-        return redirect("/publicbanking/accounts")
+        response = redirect("/publicbanking/accounts")
+        if card_remember is not None:
+            response.set_cookie("card_number", request.user.username, max_age=30)
+        return response
     else:
         return redirect("/publicbanking/")
 

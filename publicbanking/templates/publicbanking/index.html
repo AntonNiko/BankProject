@@ -57,7 +57,7 @@
 		{% csrf_token %}
 		  <div class="form-group">
 			<label for="card_number">Card Number</label>
-			<input type="text" class="form-control" id="card_number" name="card_number">
+			<input type="text" class="form-control" id="card_number" name="card_number" value="{{ card_remember }}">
 			<small id="emailHelp" class="form-text text-muted">Your information will always be secure with us.</small>
 		  </div>
 		  <div class="form-group">
