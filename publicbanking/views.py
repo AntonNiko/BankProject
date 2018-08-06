@@ -96,6 +96,16 @@ def account(request, num):
     except Transaction.DoesNotExist:
         transactions = []
 
+
+    account_modified = {}
+    account_modified["account_holder"] = account.account_holder
+    account_modified["account_transitNum"] = account.account_transitNum
+    account_modified["account_instNum"] = account.account_instNum
+    account_modified["account_number"] = account.account_number
+    account_modified["account_type"] = list(account.account_type.values_list("account_type_name", flat=True))[0]
+    account_modified["account_balance"] = account.account_balance
+    account_modified["account_card"] = account.account_card
+
     ## Modify transactions variable to display account numbers in place of QuerySet. Allows
     ## the page to display useful information including amount transferred, time, origin, and
     ## destination
@@ -108,7 +118,9 @@ def account(request, num):
         transactions_modified[i]["transaction_name"] = transactions[i].transaction_name
         transactions_modified[i]["transaction_origin"] = list(transactions[i].transaction_origin.all())[0].account_number
         transactions_modified[i]["transaction_destination"] = list(transactions[i].transaction_destination.all())[0].account_number
-    context = {"account": account, "transactions": transactions_modified}
+        transactions_modified[i]["transaction_origin_balance"] = transactions[i].transaction_origin_balance
+        transactions_modified[i]["transaction_destination_balance"] = transactions[i].transaction_destination_balance
+    context = {"account": account_modified, "transactions": transactions_modified}
     return render(request, "publicbanking/account.html", context)
 
 
@@ -146,7 +158,9 @@ def transfer_request(request):
     transaction = Transaction.objects.create(transaction_id=random.randrange(500),
                               transaction_amount = request_amount,
                               transaction_time = timezone.now(),
-                              transaction_name = "Internet Transfer - Test")
+                              transaction_name = "Internet Transfer - Test",
+                              transaction_origin_balance = account_origin.account_balance - Decimal(request_amount),
+                              transaction_destination_balance = account_destination.account_balance + Decimal(request_amount))
     transaction.save()
     transaction.transaction_origin.add(account_origin)
     transaction.transaction_destination.add(account_destination)

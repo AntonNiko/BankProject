@@ -75,14 +75,16 @@
 				{% if transaction.transaction_origin == account.account_number %}
 					<td>${{ transaction.transaction_amount }}</td>
 					<td></td>
+					<td>${{ transaction.transaction_origin_balance}}</td>
 				{% elif transaction.transaction_destination == account.account_number %}
 					<td></td>
 					<td>${{ transaction.transaction_amount }}</td>	
+					<td>${{ transaction.transaction_destination_balance}}</td>
                 {% else %}
                     <td></td>
-                    <td></td>					
+                    <td></td>
+					<td></td>
 				{% endif %}
-				<td></td>
 			  </tr>
 			  {% endfor %}
 		</tbody>

@@ -64,9 +64,12 @@ class Transaction(models.Model):
     transaction_amount = models.FloatField()
     transaction_time = models.DateTimeField("transaction time")
     transaction_name = models.CharField(max_length=200)
-    
     transaction_origin = models.ManyToManyField(Account, related_name = "transaction_origin+")
     transaction_destination = models.ManyToManyField(Account, related_name = "transaction_destination+")
+    transaction_origin_balance = models.DecimalField (max_digits=20, decimal_places=2,default=None)
+    transaction_destination_balance = models.DecimalField (max_digits=20, decimal_places=2, default=None)
+
+
 
     def __str__(self):
         return str(self.transaction_id)+"-"+str(self.transaction_origin)+"-"+str(self.transaction_destination)
