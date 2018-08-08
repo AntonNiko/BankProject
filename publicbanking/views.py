@@ -154,6 +154,10 @@ def transfer_request(request):
     account_origin = Account.objects.get(account_number=request_origin)
     account_destination = Account.objects.get(account_number=request_destination)
 
+    ## If insufficient funds in origin account, redirect
+    if (float(account_origin.account_balance) - float(request_amount)) < 0:
+        return redirect("/publicbanking/")
+
     ## Process transaction
     transaction = Transaction.objects.create(transaction_id=random.randrange(500),
                               transaction_amount = request_amount,
@@ -167,6 +171,7 @@ def transfer_request(request):
 
     ## Update balances, and save the objects to their databases
     account_origin.account_balance = account_origin.account_balance - Decimal(request_amount)
+    
     account_origin.save()
     account_destination.account_balance = account_destination.account_balance + Decimal(request_amount)
     account_destination.save()
