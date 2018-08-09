@@ -1,6 +1,6 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth import authenticate
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -177,6 +177,29 @@ def transfer_request(request):
     account_destination.save()
     
     return redirect("/publicbanking/accounts")
+
+
+
+def transaction_info_request(request, num):
+    """
+    """
+    if request.method != "GET":
+        return redirect("/publicbanking/")
+
+    ## TODO: Ensure non-authenticated users are redirected
+
+    transaction = Transaction.objects.get(transaction_id=num)
+
+    response = {"transaction_id": transaction.transaction_id,
+                "transaction_amount": transaction.transaction_amount,
+                "transaction_time": transaction.transaction_time,
+                "transaction_origin": list(transaction.transaction_origin.all())[0].account_number,
+                "transaction_destination": list(transaction.transaction_destination.all())[0].account_number,
+                "transaction_origin_balance": transaction.transaction_origin_balance,
+                "transaction_destination_balance": transaction.transaction_destination_balance
+                }
+    return JsonResponse(response)
+
 
 ## Login request (no HTML code visual)
 def login_user(request):

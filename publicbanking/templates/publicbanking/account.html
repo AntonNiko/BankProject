@@ -8,13 +8,22 @@
     <meta name="description" content="" />
 	
 	<link href="{% static 'publicbanking/css/bootstrap.css' %}" rel="stylesheet" type="text/css" />
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="{% static 'publicbanking/js/jquery-3.3.1.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'publicbanking/js/bootstrap.js' %}"></script>
 	<script>
-		$('.transactionmodal_class').click(function(e){
-			e.preventDefault;
-			$("#transactionmodal").modal("show")
-		})
+		$(document).ready(function(){
+			$('.transactionmodal_class').click(function(e){
+				$.getJSON("/publicbanking/transaction_info/39", {}, function(data){
+					$("#transaction_origin").text(data.transaction_origin);
+					$("#transaction_destination").text(data.transaction_destination);
+					$("#transaction_amount").text(data.transaction_amount);
+					$("#transaction_name").text(data.transaction_name);
+					$("#transaction_id").text(data.transaction_id);
+				});
+				e.preventDefault;
+				$("#transactionmodal").modal("show");
+			})
+		});
 	</script>
 </head>
 <body>
@@ -113,7 +122,18 @@
 				</button>
 			  </div>
 			  <div class="modal-body">
-			      <!-- -->
+				  <div class="card-body">
+					<h6 class="card-subtitle mb-2 text-muted">Transaction Origin</h6>
+					<p class="card-text" id="transaction_origin"></p>
+					<h6 class="card-subtitle mb-2 text-muted">Transaction Destination</h6>
+					<p class="card-text" id="transaction_destination"></p>
+					<h6 class="card-subtitle mb-2 text-muted">Transaction Amount</h6>
+					<p class="card-text" id="transaction_amount"></p>
+					<h6 class="card-subtitle mb-2 text-muted">Transaction name</h6>
+					<p class="card-text" id="transaction_name"></p>
+					<h6 class="card-subtitle mb-2 text-muted">Transaction ID</h6>
+					<p class="card-text" id="transaction_id"></p>
+				  </div>
 			  </div>
 			  <div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
