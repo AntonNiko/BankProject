@@ -8,9 +8,14 @@
     <meta name="description" content="" />
 	
 	<link href="{% static 'publicbanking/css/bootstrap.css' %}" rel="stylesheet" type="text/css" />
-	<script type="text/javascript" src="{% static 'publicbanking/js/bootstrap.js' %}"></script>
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-	
+	<script type="text/javascript" src="{% static 'publicbanking/js/bootstrap.js' %}"></script>
+	<script>
+		$('.transactionmodal_class').click(function(e){
+			e.preventDefault;
+			$("#transactionmodal").modal("show")
+		})
+	</script>
 </head>
 <body>
 <div class="container">
@@ -59,6 +64,7 @@
 				  <a href="#"></a>
 				</div>
 			</div>
+			
 	  </div>  
 	  
 	  <table class="table table-sm">
@@ -69,6 +75,7 @@
 				<th scope="col">Debit</th>
 				<th scope="col">Credit</th>
 				<th scope="col">Running Balance</th>
+				<th scope="col">Info</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -80,19 +87,40 @@
 					<td>${{ transaction.transaction_amount }}</td>
 					<td></td>
 					<td>${{ transaction.transaction_origin_balance}}</td>
+					<td><button type="button" class="btn btn-outline-info transactionmodal_class" value="{{ transaction.transaction_id }}" data-toggle="modal" data-target="#transactionmodal">View</button></td>
 				{% elif transaction.transaction_destination == account.account_number %}
 					<td></td>
 					<td>${{ transaction.transaction_amount }}</td>	
 					<td>${{ transaction.transaction_destination_balance}}</td>
+					<td><button type="button" class="btn btn-outline-info transactionmodal_class" value="{{ transaction.transaction_id }}" data-toggle="modal" data-target="#transactionmodal">View</button></td>
                 {% else %}
                     <td></td>
                     <td></td>
+					<td></td>
 					<td></td>
 				{% endif %}
 			  </tr>
 			  {% endfor %}
 		</tbody>
-      </table>	  
-    </div>	
+      </table>	
+	  <div class="modal fade" id="transactionmodal" tabindex="-1" role="dialog" aria-labelledby="transactionmodaltitle" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<h5 class="modal-title" id="transactionmodaltitle">Transaction Details</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span>
+				</button>
+			  </div>
+			  <div class="modal-body">
+			      <!-- -->
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			  </div>
+			</div>
+		  </div>
+	  </div>	  
+</div>	
 </body>
 </html>
