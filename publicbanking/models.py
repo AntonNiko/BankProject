@@ -52,6 +52,16 @@ class Account(models.Model):
     def __str__(self):
         return str(self.account_instNum) +"-"+ str(self.account_transitNum) + "-" + str(self.account_number)
 
+class BufferAccount(models.Model):
+    """
+    Buffer Account: Used to store wire transfers for processing and approval of bank account
+    transfers. When user submits a wire transfer, placed on hold until employee ensures
+    transfer information is valid.
+    """
+    account_name = models.CharField(max_length=200)
+    account_number = models.IntegerField()
+    account_balance = models.DecimalField(max_digits=20, decimal_places=2)
+    account_currency = models.CharField(max_length=10)
 
 class Transaction(models.Model):
     """
@@ -64,12 +74,27 @@ class Transaction(models.Model):
     transaction_amount = models.FloatField()
     transaction_time = models.DateTimeField("transaction time")
     transaction_name = models.CharField(max_length=200)
-    transaction_origin = models.ManyToManyField(Account, related_name = "transaction_origin+")
+    transaction_origin = models.ManyToManyField(Account, related_name = "transaction_origin")
     transaction_destination = models.ManyToManyField(Account, related_name = "transaction_destination+")
     transaction_origin_balance = models.DecimalField (max_digits=20, decimal_places=2,default=None)
     transaction_destination_balance = models.DecimalField (max_digits=20, decimal_places=2, default=None)
 
-
-
     def __str__(self):
         return str(self.transaction_id)+"-"+str(self.transaction_origin)+"-"+str(self.transaction_destination)
+
+class WireTransaction(models.Model):
+    """
+    Wire Transaction model: Represents a transaction which occurs from a user's account to a a bank
+    account that is owned by another bank.
+    """
+    transaction_id = models.IntegerField()
+    transaction_amount = models.FloatField()
+    transaction_time = models.DateTimeField("tansaction time")
+    transaction_name = models.CharField(max_length=200)
+    transaction_origin = models.ManyToManyField(Account, related_name = "wire_transaction_origin")
+    transaction_origin_balance = models.DecimalField(max_digits=20, decimal_places=2, default=None)
+    transaction_destination_routingNum = models.CharField(max_length=20)
+    transaction_destination_bankAddress = models.CharField(max_length=200)
+    transaction_destination_accountNum = models.CharField(max_length=50)
+    transaction_destination_recipient_name = models.CharField(max_length=100)
+    transaction_destination_recipient_address = models.CharField(max_length=200)
