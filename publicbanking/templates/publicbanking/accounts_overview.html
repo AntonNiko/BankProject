@@ -40,10 +40,10 @@
 
       <div class="nav-scroller py-1 mb-2">
         <nav class="nav d-flex justify-content-between">
-          <a class="p-2 text-muted" href="#">Banking</a>
-          <a class="p-2 text-muted" href="#">Services</a>
-          <a class="p-2 text-muted" href="#">Products</a>
-		  <a class="p-2 text-muted" href="#">Customer Services</a>
+          <a class="p-2 text-muted" href="/publicbanking/accounts/">Accounts</a>
+          <a class="p-2 text-muted" href="/publicbanking/wire_transfers/">Wire Transfers</a>
+          <a class="p-2 text-muted" href="#">E-Transfers</a>
+		  <a class="p-2 text-muted" href="#">Currency Exchange</a>
         </nav>
       </div>
 	  
@@ -118,29 +118,40 @@
 								<option value="m">Monthly</option>
 							</select>
 						</div>	
+						
+						<div class="form-group">
+							  <label for="request_amount"></label>
+							  <div class="input-group mb-2">
+								<div class="input-group-prepend">
+								  <div class="input-group-text">$</div>
+								</div>
+								<input type="text" class="form-control" id="request_amount" name="request_amount">
+							  </div>										
+						</div>
 						<button type="submit"0 class="btn btn-primary">Request Transfer</button>
 					</form>
                 </div>
             </nav>
+			<div class="card" style="width: 18rem;">
+			  <div class="card-body">
+				<h5 class="card-title">Account Details</h5>
+				<h6 class="card-subtitle mb-2 text-muted">Street</h6>
+				<p class="card-text">{{ account_holder.client_housenum }} {{ account_holder.client_streetname }}</p>
+				<h6 class="card-subtitle mb-2 text-muted">City</h6>
+				<p class="card-text">{{ account_holder.client_city }}</p>
+				<h6 class="card-subtitle mb-2 text-muted">Postal Code</h6>
+				<p class="card-text">{{ account_holder.client_zipCode }}</p>
+				<h6 class="card-subtitle mb-2 text-muted">Phone</h6>
+				<p class="card-text">{{ account_holder.client_phone }}</p>
+				<h6 class="card-subtitle mb-2 text-muted">E-mail</h6>
+				<p class="card-text">{{ account_holder.client_email }}</p>
+			  </div>
+			</div>
         </aside>
     </div>
 	
 	<div class="row mb-2">
-		<div class="card" style="width: 18rem;">
-		  <div class="card-body">
-			<h5 class="card-title">Account Details</h5>
-			<h6 class="card-subtitle mb-2 text-muted">Street</h6>
-			<p class="card-text">{{ account_holder.client_housenum }} {{ account_holder.client_streetname }}</p>
-			<h6 class="card-subtitle mb-2 text-muted">City</h6>
-			<p class="card-text">{{ account_holder.client_city }}</p>
-			<h6 class="card-subtitle mb-2 text-muted">Postal Code</h6>
-			<p class="card-text">{{ account_holder.client_zipCode }}</p>
-			<h6 class="card-subtitle mb-2 text-muted">Phone</h6>
-			<p class="card-text">{{ account_holder.client_phone }}</p>
-			<h6 class="card-subtitle mb-2 text-muted">E-mail</h6>
-			<p class="card-text">{{ account_holder.client_email }}</p>
-		  </div>
-	    </div>
+
 	</div>
 </div>
 </body>

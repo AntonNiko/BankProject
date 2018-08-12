@@ -93,6 +93,7 @@ class WireTransaction(models.Model):
     transaction_name = models.CharField(max_length=200)
     transaction_origin = models.ManyToManyField(Account, related_name = "wire_transaction_origin")
     transaction_origin_balance = models.DecimalField(max_digits=20, decimal_places=2, default=None)
+    transaction_destination_instNum = models.CharField(max_length=20)
     transaction_destination_routingNum = models.CharField(max_length=20)
     transaction_destination_bankAddress = models.CharField(max_length=200)
     transaction_destination_accountNum = models.CharField(max_length=50)

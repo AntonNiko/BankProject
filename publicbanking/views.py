@@ -123,6 +123,18 @@ def account(request, num):
     context = {"account": account_modified, "transactions": transactions_modified}
     return render(request, "publicbanking/account.html", context)
 
+def wire_transfers(request):
+    if not request.user.is_authenticated:
+        return redirect("/publicbanking/")
+
+    ## Finds the account holder's name related to the card used for the login
+    card_account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
+    ## Finds all accounts associated with the card's account holder, to display in wire transfer request form
+    account_holder_accounts = list(Account.objects.filter(account_holder = card_account_holder)) 
+    
+    context = {"account_choices":account_holder_accounts}
+    return render(request, "publicbanking/wire_transfers.html", context)
+
 
 def transfer_request(request):
     """
