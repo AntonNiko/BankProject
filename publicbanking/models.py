@@ -63,6 +63,9 @@ class BufferAccount(models.Model):
     account_balance = models.DecimalField(max_digits=20, decimal_places=2)
     account_currency = models.CharField(max_length=10)
 
+    def __str__(self):
+        return str(self.account_name) +"-"+ str(self.account_number) +"-"+ str(self.account_currency) +"-" + str(self.account_balance)
+
 class Transaction(models.Model):
     """
     Transaction model: Represents a transaction, which occurs between 2 accounts registered with
@@ -99,3 +102,8 @@ class WireTransaction(models.Model):
     transaction_destination_accountNum = models.CharField(max_length=50)
     transaction_destination_recipient_name = models.CharField(max_length=100)
     transaction_destination_recipient_address = models.CharField(max_length=200)
+
+
+    def __str__(self):
+        return str(self.transaction_id)+"-"+str(self.transaction_origin)+"-"+str(self.transaction_amount)
+            

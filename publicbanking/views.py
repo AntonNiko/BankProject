@@ -7,7 +7,7 @@ from django.utils import timezone
 from django import forms
 
 from .forms import LoginForm, RequestForm
-from .models import Account, Transaction, AccountType
+from .models import Account, Transaction, AccountType, WireTransaction
 
 from decimal import Decimal
 import random, re
@@ -143,6 +143,7 @@ def transfer_request(request):
     accounts
     """
     ## Request method for transfer_request must be POST, consistent with a form being submitted
+    ## TODO: Validate user and origin account
     if request.method != "POST":
         return redirect("/publicbanking/accounts")
     if not request.user.is_authenticated:
@@ -190,7 +191,45 @@ def transfer_request(request):
     
     return redirect("/publicbanking/accounts")
 
+def wire_transfer_request(request):
+    ## Request method for transfer_request must be POST, consistent with a form being submitted
+    if request.method != "POST":
+        return redirect("/publicbanking/accounts")
+    if not request.user.is_authenticated:
+        return redirect("/publicbanking/")
 
+    ## Fetch information that was submitted with the form, but not as part of the Django
+    ## Form object. (This was necessary to avoid displaying no accounts to transfer from
+    ## in the form)
+    post_data = dict(request.POST.items())
+    request_amount = post_data["request_amount"]
+    request_origin = post_data["request_origin"]
+    request_instNum = post_data["request_instNum"]
+    request_routingNum = post_data["request_routingNum"]
+    request_accountNum = post_data["request_accountNum"]
+    request_bankaddress = post_data["request_bankaddress"]
+    request_name = post_data["request_name"]
+    request_address = post_data["request_address"]
+
+
+    ## Finds the origin account object for the wire transaction object, and update balances
+    account_origin = Account.objects.get(account_number=request_origin)
+
+    wire_transaction = WireTransaction.objects.create(transaction_id=random.randrange(500),
+                                                      transaction_amount = request_amount,
+                                                      transaction_time = timezone.now(),
+                                                      transaction_name = "Wire Transfer - Test",
+                                                      transaction_origin_balance = account_origin.account_balance - Decimal(request_amount),
+                                                      transaction_destination_instNum = request_instNum,
+                                                      transaction_detination_routingNum = request_routingNum,
+                                                      transaction_destination_bankAddress = request_bankaddress,
+                                                      transaction_destination_accountNum = request_accountNum,
+                                                      transaction_destination_recipient_name = request_name,
+                                                      transaction_destination_recipient_address = request_address
+                                                      )                                  
+    wire_transaction.save()
+    wire_transaction.transaction_origin.add(account_origin)
+    return redirect("/publicbanking/accounts/")
 
 def transaction_info_request(request, num):
     """
