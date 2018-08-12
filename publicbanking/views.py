@@ -193,6 +193,7 @@ def transaction_info_request(request, num):
     response = {"transaction_id": transaction.transaction_id,
                 "transaction_amount": transaction.transaction_amount,
                 "transaction_time": transaction.transaction_time,
+                "transaction_name": transaction.transaction_name,
                 "transaction_origin": list(transaction.transaction_origin.all())[0].account_number,
                 "transaction_destination": list(transaction.transaction_destination.all())[0].account_number,
                 "transaction_origin_balance": transaction.transaction_origin_balance,

@@ -13,10 +13,12 @@
 	<script>
 		$(document).ready(function(){
 			$('.transactionmodal_class').click(function(e){
-				$.getJSON("/publicbanking/transaction_info/39", {}, function(data){
+				var transactionNum = $(this).val();
+				var jsonRequestLink = "/publicbanking/transaction_info/"+transactionNum
+				$.getJSON(jsonRequestLink, {}, function(data){
 					$("#transaction_origin").text(data.transaction_origin);
 					$("#transaction_destination").text(data.transaction_destination);
-					$("#transaction_amount").text(data.transaction_amount);
+					$("#transaction_amount").text("$"+data.transaction_amount);
 					$("#transaction_name").text(data.transaction_name);
 					$("#transaction_id").text(data.transaction_id);
 				});
@@ -31,7 +33,7 @@
       <header class="blog-header py-3">
         <div class="row flex-nowrap justify-content-between align-items-center">
           <div class="col-4 pt-1">
-            <a class="text-muted" href="#">Subscribe</a>
+            <a class="text-muted" href="#"></a>
           </div>
           <div class="col-4 text-center">
             <a class="blog-header-logo text-dark" href="#"><img src="{% static 'publicbanking/images/logo_bank.png' %}" alt="Jupiter Bank" class="img-responsive" style="max-width: 100%;max-height: 120px;"></a>
