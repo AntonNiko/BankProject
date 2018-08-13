@@ -8,6 +8,7 @@ from django import forms
 
 from .forms import LoginForm, RequestForm
 from .models import Account, Transaction, AccountType, WireTransaction
+from .utils import *
 
 from decimal import Decimal
 import random, re
@@ -43,29 +44,13 @@ def accounts_overview(request):
         return redirect("/publicbanking/")
 
     ## Finds the account holder's name related to the card used for the login
-    card_account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
-    ## Finds all accounts associated with the card's account holder, to display in transfer request form
-    account_holder_accounts = list(Account.objects.filter(account_holder = card_account_holder)) 
-    
+    account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
     ## Transfer request form to display to user, to transfer money between accounts
     request_form = RequestForm()
-    ## Finds all accounts associated with the account holder's card to display
-    accounts = Account.objects.filter(account_card=request.user.username)
-    ## Set account details in a list, such that every piece of information can be used
-    accounts_modified = []
-    balance = 0
-    for i in range(len(accounts)):
-        accounts_modified.append({})
-        accounts_modified[i]["account_holder"] = accounts[i].account_holder
-        accounts_modified[i]["account_transitNum"] = accounts[i].account_transitNum
-        accounts_modified[i]["account_instNum"] = accounts[i].account_instNum
-        accounts_modified[i]["account_number"] = accounts[i].account_number
-        accounts_modified[i]["account_type"] = list(accounts[i].account_type.values_list("account_type_name", flat=True))[0]
-        accounts_modified[i]["account_balance"] = accounts[i].account_balance
-        accounts_modified[i]["account_card"] = accounts[i].account_card
-        balance+=accounts[i].account_balance
+    accounts = fetch_accounts(request.user.username)
+    balance = fetch_totalBalance(reques.user.username)
 
-    context = {"accounts":accounts_modified, "total_balance":balance, "request_form":request_form, "account_choices":account_holder_accounts, "account_holder":card_account_holder}
+    context = {"accounts":accounts, "total_balance":balance, "request_form":request_form, "account_holder":account_holder}
     return render(request, "publicbanking/accounts_overview.html", context)
 
 def account(request, num):
@@ -85,57 +70,10 @@ def account(request, num):
     if request.user.username != str(Account.objects.get(account_number=num).account_card):
         return redirect("/publicbanking/")
 
-    ## If no accounts are found, continue and display blank page
-    try:
-        account = Account.objects.get(account_number=num)
-    except Account.DoesNotExist:
-        account = None
-    account_modified = {}
-    account_modified["account_holder"] = account.account_holder
-    account_modified["account_transitNum"] = account.account_transitNum
-    account_modified["account_instNum"] = account.account_instNum
-    account_modified["account_number"] = account.account_number
-    account_modified["account_type"] = list(account.account_type.values_list("account_type_name", flat=True))[0]
-    account_modified["account_balance"] = account.account_balance
-    account_modified["account_card"] = account.account_card
-  
+    account = fetch_account(num)
     ## Similar process to find transactions related to account
-    try:
-        transactions = Transaction.objects.filter(Q(transaction_origin=Account.objects.get(account_number=num)) | Q(transaction_destination=Account.objects.get(account_number=num)))
-    except Transaction.DoesNotExist:
-        transactions = []
-    ## Modify transactions variable to display account numbers in place of QuerySet. Allows
-    ## the page to display useful information including amount transferred, time, origin, and
-    ## destination
-    transactions_modified = []
-    for i in range(len(transactions)):
-        transactions_modified.append({})
-        transactions_modified[i]["transaction_id"] = transactions[i].transaction_id
-        transactions_modified[i]["transaction_amount"] = transactions[i].transaction_amount
-        transactions_modified[i]["transaction_time"] = transactions[i].transaction_time
-        transactions_modified[i]["transaction_name"] = transactions[i].transaction_name
-        transactions_modified[i]["transaction_origin"] = list(transactions[i].transaction_origin.all())[0].account_number
-        transactions_modified[i]["transaction_destination"] = list(transactions[i].transaction_destination.all())[0].account_number
-        transactions_modified[i]["transaction_origin_balance"] = transactions[i].transaction_origin_balance
-        transactions_modified[i]["transaction_destination_balance"] = transactions[i].transaction_destination_balance
-
-    ## Find wire transactions (pending or completed)
-    try:
-        wire_transactions = WireTransaction.objects.filter(transaction_origin=Account.objects.get(account_number=num))
-    except WireTransaction.DoesNotEexist:
-        wire_transactions = []
-    wire_transactions_modified = []
-    for i in range(len(wire_transactions)):
-        wire_transactions_modified.append({})
-        wire_transactions_modified[i]["transaction_id"] = wire_transactions[i].transaction_id
-        wire_transactions_modified[i]["transaction_amount"] = wire_transactions[i].transaction_amount
-        wire_transactions_modified[i]["transaction_time"] = wire_transactions[i].transaction_time
-        wire_transactions_modified[i]["transaction_name"] = wire_transactions[i].transaction_name
-        wire_transactions_modified[i]["transaction_origin"] = list(wire_transactions[i].transaction_origin.all())[0].account_number
-        wire_transactions_modified[i]["transaction_origin_balance"] = wire_transactions[i].transaction_origin_balance
-
-    transactions_modified.extend(wire_transactions_modified)
-    context = {"account": account_modified, "transactions": transactions_modified}
+    transactions = fetch_accountTransactions(num)
+    context = {"account": account, "transactions": transactions}
     return render(request, "publicbanking/account.html", context)
 
 def wire_transfers(request):
