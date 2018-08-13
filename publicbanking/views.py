@@ -90,13 +90,6 @@ def account(request, num):
         account = Account.objects.get(account_number=num)
     except Account.DoesNotExist:
         account = None
-    ## Similar process to find transactions related to account
-    try:
-        transactions = Transaction.objects.filter(Q(transaction_origin=Account.objects.get(account_number=num)) | Q(transaction_destination=Account.objects.get(account_number=num)))
-    except Transaction.DoesNotExist:
-        transactions = []
-
-
     account_modified = {}
     account_modified["account_holder"] = account.account_holder
     account_modified["account_transitNum"] = account.account_transitNum
@@ -105,7 +98,12 @@ def account(request, num):
     account_modified["account_type"] = list(account.account_type.values_list("account_type_name", flat=True))[0]
     account_modified["account_balance"] = account.account_balance
     account_modified["account_card"] = account.account_card
-
+  
+    ## Similar process to find transactions related to account
+    try:
+        transactions = Transaction.objects.filter(Q(transaction_origin=Account.objects.get(account_number=num)) | Q(transaction_destination=Account.objects.get(account_number=num)))
+    except Transaction.DoesNotExist:
+        transactions = []
     ## Modify transactions variable to display account numbers in place of QuerySet. Allows
     ## the page to display useful information including amount transferred, time, origin, and
     ## destination
@@ -120,6 +118,23 @@ def account(request, num):
         transactions_modified[i]["transaction_destination"] = list(transactions[i].transaction_destination.all())[0].account_number
         transactions_modified[i]["transaction_origin_balance"] = transactions[i].transaction_origin_balance
         transactions_modified[i]["transaction_destination_balance"] = transactions[i].transaction_destination_balance
+
+    ## Find wire transactions (pending or completed)
+    try:
+        wire_transactions = WireTransaction.objects.filter(transaction_origin=Account.objects.get(account_number=num))
+    except WireTransaction.DoesNotEexist:
+        wire_transactions = []
+    wire_transactions_modified = []
+    for i in range(len(wire_transactions)):
+        wire_transactions_modified.append({})
+        wire_transactions_modified[i]["transaction_id"] = wire_transactions[i].transaction_id
+        wire_transactions_modified[i]["transaction_amount"] = wire_transactions[i].transaction_amount
+        wire_transactions_modified[i]["transaction_time"] = wire_transactions[i].transaction_time
+        wire_transactions_modified[i]["transaction_name"] = wire_transactions[i].transaction_name
+        wire_transactions_modified[i]["transaction_origin"] = list(wire_transactions[i].transaction_origin.all())[0].account_number
+        wire_transactions_modified[i]["transaction_origin_balance"] = wire_transactions[i].transaction_origin_balance
+
+    transactions_modified.extend(wire_transactions_modified)
     context = {"account": account_modified, "transactions": transactions_modified}
     return render(request, "publicbanking/account.html", context)
 
@@ -184,7 +199,6 @@ def transfer_request(request):
 
     ## Update balances, and save the objects to their databases
     account_origin.account_balance = account_origin.account_balance - Decimal(request_amount)
-    
     account_origin.save()
     account_destination.account_balance = account_destination.account_balance + Decimal(request_amount)
     account_destination.save()
@@ -221,7 +235,7 @@ def wire_transfer_request(request):
                                                       transaction_name = "Wire Transfer - Test",
                                                       transaction_origin_balance = account_origin.account_balance - Decimal(request_amount),
                                                       transaction_destination_instNum = request_instNum,
-                                                      transaction_detination_routingNum = request_routingNum,
+                                                      transaction_destination_routingNum = request_routingNum,
                                                       transaction_destination_bankAddress = request_bankaddress,
                                                       transaction_destination_accountNum = request_accountNum,
                                                       transaction_destination_recipient_name = request_name,
@@ -229,6 +243,10 @@ def wire_transfer_request(request):
                                                       )                                  
     wire_transaction.save()
     wire_transaction.transaction_origin.add(account_origin)
+
+    ## Update balances, and save the objects to their databases
+    account_origin.account_balance = account_origin.account_balance - Decimal(request_amount)
+    account_origin.save()
     return redirect("/publicbanking/accounts/")
 
 def transaction_info_request(request, num):
