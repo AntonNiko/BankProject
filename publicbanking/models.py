@@ -18,6 +18,7 @@ class Client(models.Model):
     def __str__(self):
         return str(self.client_name) +"-"+ str(self.client_phone) +"-"+ str(self.client_email)
 
+
 class AccountType(models.Model):
     """
     Account types: Represents a bank account type, which every Account object has to be related
