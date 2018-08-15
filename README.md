@@ -51,7 +51,7 @@ When you type in ```http://127.0.0.1:8080``` from your local host, the user will
 
 Throughout each step of the application, it is vital to keep track of users and their activity. Currently the application always checks that, each time a particular page is loaded, the user is indeed who they say they are and that they are not trying to impersonate another user in order to access their accounts or transfer money. For example:
 
-```
+```python
     ## Redirect the user if they are not logged in
     if not request.user.is_authenticated:
         return redirect("/publicbanking/")
@@ -74,6 +74,13 @@ In ```models.py```, we can see that several models are defined and sued within t
 
 **Note**: A wire transfer requires different information than a simple transaction, such as institution number and recipient's address, thus the need for a separate model
 
+## Operation
+
+**Login**: When a POST request is sent from the home page or the login modal, int is handled by ```publicbanking/view.py``` function login_user(request) function. By using Django's built-in authenticate() function and other statements for validation, it either recognizes the user as logged in and redirects them to their accounts overview page, or redirects them back to the login page.
+**Logout**: When a user submits a POST request to logout, it calls the logout(request) function and redirects user to the login page.
+**Transfer Request**: Logged in users can submit transfer requests between their accounts. It ensures that no transfers take place if there are insuficcient funds, and creates a transaction objects with record-keeping variables such as the running balance of each account
+
+
 ## Gallery
 
 This section includes animations that show the website in operation, including several important actions usch as requesting transfers, viewing accounts, and checking user authentication
@@ -89,7 +96,7 @@ This section includes animations that show the website in operation, including s
 
 
 ### Transfer Request
-
+![Transfer Request Animation](img/gifs/transfer-animation.gif)
 
 ## Notes
 
