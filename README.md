@@ -4,15 +4,17 @@
 
 
 <p align="center">
-  <a href="#key-features">Introduction & Installationo</a> •
+  <a href="#user-content-introduction--insallation">Introduction & Installation</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#download">Gallery</a> •
   <a href="#credits">Notes</a> •
   <a href="#related">Related</a> •
+  <a href="#license">License</a> •
+  <a href="#acknowledgements">Acknowledgements</a> •
 </p>
 
 
-This project is an implementation of the Django MVC framework to develop a publicly accessible banking website. Users can register and login to their accounts, view their various accounts, request transfers and setup bill payments. The website is supported by Bootstrap 4 with some details customized in terms of style and scripts.  
+This project is an implementation of the Django MVC framework to develop a publicly accessible banking website. Users can register and login to their accounts, view their various accounts, request transfers and setup bill payments. The website is supported by Bootstrap 4 with some details customized in terms of style and scripts. The majority of scripts are documented under the [PEP 8](https://www.python.org/dev/peps/pep-0008/) styling convention.
 
 ![Login Animation](img/gifs/login-animation.gif)
 
@@ -35,14 +37,44 @@ These project uses the [Django 2.0](https://www.djangoproject.com/) Framework to
 
 This project uses anaconda 4.5.9 with Python 3.6.3
 
-### Prerequisites
+## How to Use
 
-What things you need to install the software and how to install them
+Once all the files contained in the repo are installed onto your system, simply go into the command line and type 
 
 ```
+python manage.py runserver 8080
 ```
 
-### Installing
+When you type in ```http://127.0.0.1:8080``` from your local host, the user will be greeted by the login screen. Using ```urls.py``` in both the top level project folder, and the publicbanking app, it is possible to request pages that seem to follow through without any confusion to the system or the user. Of ocurse, in deployment mode, the website domain will replace the localhost URL. 
+
+### User Authentication
+
+Throughout each step of the application, it is vital to keep track of users and their activity. Currently the application always checks that, each time a particular page is loaded, the user is indeed who they say they are and that they are not trying to impersonate another user in order to access their accounts or transfer money. For example:
+
+```
+    ## Redirect the user if they are not logged in
+    if not request.user.is_authenticated:
+        return redirect("/publicbanking/")
+    ## Redirect the user if they are trying to access another user's account
+    if request.user.username != str(Account.objects.get(account_number=num).account_card):
+        return redirect("/publicbanking/")
+```
+
+Since the request object handles the logged in status on behalf of the developer, these 2 conditional statements ensure that the user is not attempting to pass as another legitimate user. 
+
+### Models
+
+In ```models.py```, we can see that several models are defined and sued within the application:
+* Client - Represents a physical person who is registered as a bank's client
+* Account - Represents a bank account that is owned by a client. It is linked to a card number and account type
+* AccountType - Stores the different bank account types available to Clients
+* BufferAccount - Represents an account owned by the bank, with the purpose of processing outgoing and incoming transactions
+* Transaction - Object that represents an amount of money transferred from one account to another
+* WireTransaction - Object that represents an amount of money transferred from one account to an external account
+
+**Note**: A wire transfer requires different information than a simple transaction, such as institution number and recipient's address, thus the need for a separate model
+
+## Gallery
 
 A step by step series of examples that tell you how to get a development env running
 
@@ -60,49 +92,11 @@ until finished
 
 End with an example of getting some data out of the system or using it for a little demo
 
-## Running the tests
+## Notes
 
 Explain how to run the automated tests for this system
 
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+## Related
 
 ## License
 
