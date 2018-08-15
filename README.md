@@ -4,8 +4,8 @@
 
 
 <p align="center">
-  <a href="#user-content-introduction--insallation">Introduction & Installation</a> •
-  <a href="#how-to-use">How To Use</a> •
+  <a href="#introduction--insallation">Introduction & Installation</a> •
+  <a href="#structure--use">Structure & Use</a> •
   <a href="#download">Gallery</a> •
   <a href="#credits">Notes</a> •
   <a href="#related">Related</a> •
@@ -37,7 +37,7 @@ These project uses the [Django 2.0](https://www.djangoproject.com/) Framework to
 
 This project uses anaconda 4.5.9 with Python 3.6.3
 
-## How to Use
+## Structure & Use
 
 Once all the files contained in the repo are installed onto your system, simply go into the command line and type 
 
@@ -76,21 +76,20 @@ In ```models.py```, we can see that several models are defined and sued within t
 
 ## Gallery
 
-A step by step series of examples that tell you how to get a development env running
+This section includes animations that show the website in operation, including several important actions usch as requesting transfers, viewing accounts, and checking user authentication
 
-Say what the step will be
 
-```
-Give the example
-```
+### Login 
 
-And repeat
 
-```
-until finished
-```
+### Logout
 
-End with an example of getting some data out of the system or using it for a little demo
+
+### User Authentication Redirect
+
+
+### Transfer Request
+
 
 ## Notes
 
