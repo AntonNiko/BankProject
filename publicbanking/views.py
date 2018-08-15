@@ -146,6 +146,9 @@ def transfer_request(request):
     if request_origin == request_destination:
         return redirect("/publicbanking/accounts")
 
+
+    ## TODO: Ensure that origin or destination accounts both owned by user
+
     ## Finds the origin and destination account objects for the transaction object,
     ## and update balances
     account_origin = Account.objects.get(account_number=request_origin)
@@ -282,7 +285,10 @@ def logout_user(request):
     Processes logout requests for the website. Once the user is logged out, redirect them to the
     login page.
     """
-    ## TODO: only process POST requests
+    ## Redirect user if not POST, since consistent with a form submission
+    if request.method != "POST":
+        return redirect("/publicbanking/")
+    
     logout(request)
     return redirect("/publicbanking/")
 
