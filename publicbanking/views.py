@@ -287,6 +287,9 @@ def logout_user(request):
     return redirect("/publicbanking/")
 
 def error_404_view(request, exception):
-    data = {"name":14}
-    return HttpResponse("This is a 404 page...")
+    context = {}
+    return render(request, "publicbanking/error_400_view.html", context)
+
+def error_500_view(request, exception):
+    return render(request, "publicbanking/error_500_view.html", context)
 
