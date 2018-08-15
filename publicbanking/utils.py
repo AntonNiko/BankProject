@@ -119,6 +119,11 @@ def fetch_accountTransactions(accountNum):
 
     ## Add any wire transactions found to the original transactions_modified list 
     transactions_modified.extend(wire_transactions_modified)
+
+    ## Sort the transactions by the time it was processed, starting from latest first
+    transactions_modified.sort(key = lambda x: (x["transaction_time"]), reverse=True)
+
+    
     return transactions_modified
 
 def fetch_totalBalance(clientCard):
@@ -134,5 +139,5 @@ def fetch_totalBalance(clientCard):
     accounts = Account.objects.filter(account_card=clientCard)
     balance = 0
     for i in range(len(accounts)):
-        balance+=accounts[i].account_card
+        balance+=accounts[i].account_balance
     return balance

@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf.urls import handler404
 
 
 urlpatterns = [
     path('publicbanking/', include("publicbanking.urls")),
     path('admin/', admin.site.urls),
 ]
+
+handler404 = "publicbanking.views.error_404_view"

@@ -1,3 +1,9 @@
+"""
+View file used to direct requests to publicbanking/. Follows Django's guidelines in terms
+of providing functions to process requests sent by the browser. Contains functions that process
+both GET and POST requests.
+
+"""
 from django.contrib.auth import login, logout
 from django.contrib.auth import authenticate
 from django.http import Http404, HttpResponse, JsonResponse
@@ -18,6 +24,11 @@ def index(request):
     """
     Handles requests to /publicbanking/, by displaying a standard login page, or redirects
     the user to the accounts page if they are already logged in to the website
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+    Returns:
+        render (django.http.response.HttpResponse): Django Http Request for the login page of /publicbanking/
     """
     ## If user has been authenticated already, redirect
     if request.user.is_authenticated:
@@ -37,6 +48,11 @@ def accounts_overview(request):
     Handles requests to /publicbanking/accounts, by displaying a summary of each account
     associated to the card holder. Page includes a transfer request form. If user is not
     logged in, then redirect to /publicbanking/ to login
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+    Returns:
+        render (django.http.response.HttpResponse): Django Http Request for the /publicbanking/accounts/ view
     """
     
     ## If user has not been authenticated, redirect
@@ -45,22 +61,28 @@ def accounts_overview(request):
 
     ## Finds the account holder's name related to the card used for the login
     account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
+    ## Finds all accounts associated with the card's account holder, to display in transfer request form
+    account_choices = list(Account.objects.filter(account_holder = account_holder)) 
     ## Transfer request form to display to user, to transfer money between accounts
     request_form = RequestForm()
     accounts = fetch_accounts(request.user.username)
-    balance = fetch_totalBalance(reques.user.username)
+    balance = fetch_totalBalance(request.user.username)
 
-    context = {"accounts":accounts, "total_balance":balance, "request_form":request_form, "account_holder":account_holder}
+    context = {"accounts":accounts, "account_choices":account_choices, "total_balance":balance, "request_form":request_form, "account_holder":account_holder}
     return render(request, "publicbanking/accounts_overview.html", context)
 
 def account(request, num):
     """
     Handles requests to /publicbanking/accounts/<accountnum>. <accountnum> specifies an
     account owned by the user who is logged in. If the account number holder does not match
-    with the logged in user, redirect them to /publicbanking/ to login.
-
-    Displays information including: balance, transit number, account number, and a history of
+    with the logged in user, redirect them to /publicbanking/ to login. Displays information including: balance, transit number, account number, and a history of
     transactions related to that account
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+        num (int): Account number
+    Returns:
+        render (django.http.response.HttpResponse): Django Http Request for the /publicbanking/account/<accountnum> view
     """
     ## If not logged in, redirect to /publicbanking/ for login
     if not request.user.is_authenticated:
@@ -77,6 +99,10 @@ def account(request, num):
     return render(request, "publicbanking/account.html", context)
 
 def wire_transfers(request):
+    """
+s
+
+    """
     if not request.user.is_authenticated:
         return redirect("/publicbanking/")
 
@@ -94,6 +120,11 @@ def transfer_request(request):
     Handles POST requests to /publicbanking/transfer_request. Processes logged in users' requests
     to transfer money between one of their accounts. If successful, redirects them to /publicbanking/
     accounts
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+    Returns:
+        redirect (django.http.response.HttpResponse): Django Http Request for the /publicbanking/account/<accountnum> view
     """
     ## Request method for transfer_request must be POST, consistent with a form being submitted
     ## TODO: Validate user and origin account
@@ -254,4 +285,8 @@ def logout_user(request):
     ## TODO: only process POST requests
     logout(request)
     return redirect("/publicbanking/")
+
+def error_404_view(request, exception):
+    data = {"name":14}
+    return HttpResponse("This is a 404 page...")
 
