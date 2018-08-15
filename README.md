@@ -1,4 +1,16 @@
-# Bank Project
+<h1 align="center">
+  Bank Project
+</h1>
+
+
+<p align="center">
+  <a href="#key-features">Introduction & Installationo</a> •
+  <a href="#how-to-use">How To Use</a> •
+  <a href="#download">Gallery</a> •
+  <a href="#credits">Notes</a> •
+  <a href="#related">Related</a> •
+</p>
+
 
 This project is an implementation of the Django MVC framework to develop a publicly accessible banking website. Users can register and login to their accounts, view their various accounts, request transfers and setup bill payments. The website is supported by Bootstrap 4 with some details customized in terms of style and scripts.  
 
