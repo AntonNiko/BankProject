@@ -2,6 +2,7 @@
 
 This project is an implementation of the Django MVC framework to develop a publicly accessible banking website. Users can register and login to their accounts, view their various accounts, request transfers and setup bill payments. The website is supported by Bootstrap 4 with some details customized in terms of style and scripts.  
 
+![Login Animation](img/gifs/login-animation.gif)
 
 ## Introduction & Insallation
 
