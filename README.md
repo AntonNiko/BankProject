@@ -2,16 +2,31 @@
 
 This project is an implementation of the Django MVC framework to develop a publicly accessible banking website. Users can register and login to their accounts, view their various accounts, request transfers and setup bill payments. The website is supported by Bootstrap 4 with some details customized in terms of style and scripts.  
 
-## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+## Introduction & Insallation
+
+These project uses the [Django 2.0](https://www.djangoproject.com/) Framework to implement the project. To install Django 2.0, you can use several package managers:
+
+### pip
+```
+  pip install Django==2.0.5
+```
+### Anaconda
+```
+  conda install -c anaconda django
+```
+### git 
+```
+  git clone https://github.com/django.git
+```
+
+This project uses anaconda 4.5.9 with Python 3.6.3
 
 ### Prerequisites
 
 What things you need to install the software and how to install them
 
 ```
-Give examples
 ```
 
 ### Installing
