@@ -9,6 +9,7 @@ urlpatterns = [path("", views.index),
                path("wire_transfer_request/", views.wire_transfer_request),
                path("transaction_info/<int:num>", views.transaction_info_request),
                path("wire_transfers/", views.wire_transfers),
+               path("currency_exchange/", views.currency_exchange),
                path("login_user/", views.login_user),
                path("logout_user/", views.logout_user),
                ]

@@ -177,6 +177,14 @@ def transfer_request(request):
     
     return redirect("/publicbanking/accounts")
 
+
+def currency_exchange(request):
+    if not request.user.is_authenticated:
+        return redirect("/publicbanking/")
+    
+    context = {}
+    return render(request, "publicbanking/currency_exchange.html", context)
+
 def wire_transfer_request(request):
     ## Request method for transfer_request must be POST, consistent with a form being submitted
     if request.method != "POST":
