@@ -157,3 +157,28 @@ def fetch_totalBalance(clientCard):
     for i in range(len(accounts)):
         balance+=accounts[i].account_balance
     return balance
+
+def validate_transfer_user(request, request_origin, request_destination):
+    """
+    Function which checks that the transfer origin and destination accounts are both owned by the same user,
+    thus validating the funds transfer. If not valid, returns False, if valid, returns True
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+        request_origin (str): Account number for transfer's origin account
+        request_destination (str): Account number for transfer's destination account
+    Returns:
+        valid (bool): Variable indicating if validity check is successful
+
+    """
+    origin_account = Account.objects.get(account_number=int(request_origin))      
+    destination_account = Account.objects.get(account_number=int(request_destination))
+    user_accounts = Account.objects.filter(account_card=int(request.user.username))
+
+    if (origin_account not in user_accounts) or (destination_account not in user_accounts):
+        valid = False
+    else:
+        valid = True
+    return valid
+   
+git commit -m "Added function validate_transfer_user() to utils.py to ensure user transfer request is legitimate"

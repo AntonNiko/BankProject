@@ -58,9 +58,18 @@ def accounts_overview(request):
     ## If user has not been authenticated, redirect
     if not request.user.is_authenticated:
         return redirect("/publicbanking/")
-
-    ## Finds the account holder's name related to the card used for the login
-    account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
+    
+    ## Finds the account holder's name related to the card used for the login, and logouts the user if either, the username
+    ## (card number) is not a number, or the account search results in no matches found
+    try:
+        account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
+    except ValueError:
+        logout(request)
+        return redirect("/publicbanking/")
+    except Account.DoesNotExist:
+        logout(request)
+        return redirect("/publicbanking/")
+    
     ## Finds all accounts associated with the card's account holder, to display in transfer request form
     account_choices = list(Account.objects.filter(account_holder = account_holder)) 
     ## Transfer request form to display to user, to transfer money between accounts
@@ -113,8 +122,17 @@ def wire_transfers(request):
     if not request.user.is_authenticated:
         return redirect("/publicbanking/")
 
-    ## Finds the account holder's name related to the card used for the login
-    card_account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
+    ## Finds the account holder's name related to the card used for the login, and logouts the user if either, the username
+    ## (card number) is not a number, or the account search results in no matches found
+    try:
+        card_account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
+    except ValueError:
+        logout(request)
+        return redirect("/publicbanking/")
+    except Account.DoesNotExist:
+        logout(request)
+        return redirect("/publicbanking/")
+
     ## Finds all accounts associated with the card's account holder, to display in wire transfer request form
     account_holder_accounts = list(Account.objects.filter(account_holder = card_account_holder)) 
     
@@ -149,12 +167,14 @@ def transfer_request(request):
     request_destination = post_data["request_destination"]
     request_frequency = post_data["request_frequency"]
 
+    ## Checks that both the origin and destination accounts are both owned by the logged in user
+    if not validate_transfer_user(request, request_origin, request_destination):
+        logout(request)
+        return redirect("/publicbanking/")
+
     ## If origin and destinationa accounts are the same, cancel the transfer and redirect
     if request_origin == request_destination:
         return redirect("/publicbanking/accounts")
-
-
-    ## TODO: Ensure that origin or destination accounts both owned by user
 
     ## Finds the origin and destination account objects for the transaction object,
     ## and update balances
