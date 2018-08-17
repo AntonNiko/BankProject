@@ -165,11 +165,13 @@ def transfer_request(request):
     if (float(account_origin.account_balance) - float(request_amount)) < 0:
         return redirect("/publicbanking/")
 
+    ## Create transaction ID
+    id_num=random.randint(1000000,99999999)
     ## Process transaction
-    transaction = Transaction.objects.create(transaction_id=random.randrange(500),
+    transaction = Transaction.objects.create(transaction_id=id_num,
                               transaction_amount = request_amount,
                               transaction_time = timezone.now(),
-                              transaction_name = "Internet Transfer - Test",
+                              transaction_name = "Internet Banking INTERNET TRANSFER {}".format(id_num),
                               transaction_origin_balance = account_origin.account_balance - Decimal(request_amount),
                               transaction_destination_balance = account_destination.account_balance + Decimal(request_amount))
     transaction.save()
@@ -238,11 +240,12 @@ def wire_transfer_request(request):
 
     ## Finds the origin account object for the wire transaction object, and update balances
     account_origin = Account.objects.get(account_number=request_origin)
-
-    wire_transaction = WireTransaction.objects.create(transaction_id=random.randrange(500),
+    ## Create transaction ID
+    id_num=random.randint(100000000,199999999)
+    wire_transaction = WireTransaction.objects.create(transaction_id=id_num,
                                                       transaction_amount = request_amount,
                                                       transaction_time = timezone.now(),
-                                                      transaction_name = "Wire Transfer - Test",
+                                                      transaction_name = "Internet Banking WIRE TRANSFER {}".format(id_num),
                                                       transaction_origin_balance = account_origin.account_balance - Decimal(request_amount),
                                                       transaction_destination_instNum = request_instNum,
                                                       transaction_destination_routingNum = request_routingNum,
