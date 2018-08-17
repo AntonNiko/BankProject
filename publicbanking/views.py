@@ -93,14 +93,21 @@ def account(request, num):
         return redirect("/publicbanking/")
 
     account = fetch_account(num)
+    account_type = fetch_account_type(account["account_number"])
     ## Similar process to find transactions related to account
     transactions = fetch_accountTransactions(num)
-    context = {"account": account, "transactions": transactions}
+    context = {"account": account, "transactions": transactions, "account_type": account_type}
     return render(request, "publicbanking/account.html", context)
 
 def wire_transfers(request):
     """
-s
+    Handles requests to /publicbanking/wire_transfers, by displaying a page which allows the user to
+    request a wire transfer after inputting all the necessary information into the form fields provided.
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+    Returns:
+        request (django.http.response.HttpResponse: Django Http Request for the /publicbanking/wire_transfer view
 
     """
     if not request.user.is_authenticated:
@@ -124,7 +131,7 @@ def transfer_request(request):
     Args:
         request (django.core.handlers.wsgi.WSGIRequest): Django request
     Returns:
-        redirect (django.http.response.HttpResponse): Django Http Request for the /publicbanking/account/<accountnum> view
+        redirect (django.http.response.HttpResponse): Django Http Redirect Request for the /publicbanking/account/<accountnum> view
     """
     ## Request method for transfer_request must be POST, consistent with a form being submitted
     ## TODO: Validate user and origin account
@@ -179,6 +186,17 @@ def transfer_request(request):
 
 
 def currency_exchange(request):
+    """
+    Handles requests to /publicbanking/currency_exchange, by displaying a page that allows the user
+    to search a specific currency and input data that allows the user to view the results of calculations,
+    and how much it will cost the customer to request such a currency exchange.
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+    Returns:
+        render (django.http.response.HttpResponse): Django Http Request for the /publicbanking/wire_transfers view
+
+    """
     if not request.user.is_authenticated:
         return redirect("/publicbanking/")
     
@@ -186,6 +204,18 @@ def currency_exchange(request):
     return render(request, "publicbanking/currency_exchange.html", context)
 
 def wire_transfer_request(request):
+    """
+    Handles requests to /publicbanking/wire_transfer_request/, which is deisgned to be a POST request for a
+    wire transfer request, and to a destination account to another institution. Creates a transaction object
+    which keeps track of originating account balance, and of which the destination is a buffer account for processing.
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+    Returns:
+        redirect (django.http.response.HttpResponse): Django Http Request for the /publicbanking/wire_transfers view
+
+
+    """
     ## Request method for transfer_request must be POST, consistent with a form being submitted
     if request.method != "POST":
         return redirect("/publicbanking/accounts")
@@ -231,13 +261,28 @@ def wire_transfer_request(request):
 
 def transaction_info_request(request, num):
     """
+    Handles GET requests to /publicbanking/transaction_info_request/<int:num>, and returns a JsonResponse
+    objet which contains information about the requested transaction. Assumes the user has been authenticated
+    previously, and is calling this function legitimately.
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+        num (int): Transaction id requested
+    Returns:
+        redirect (django.http.response.HttpResponse): Redirect HttpResponse object in case the request cannot be completed
+        JsonResponse (django.http.response.JsonResponse): Response that returns transaction information on request submitted
     """
     if request.method != "GET":
         return redirect("/publicbanking/")
 
     ## TODO: Ensure non-authenticated users are redirected
-
-    transaction = Transaction.objects.get(transaction_id=num)
+    try:
+        transaction = Transaction.objects.get(transaction_id=num)
+    except Transaction.DoesNotExist:
+        try:
+             transaction = WireTransaction.objects.get(transaction_id=num)
+        except:
+            transaction = None
 
     response = {"transaction_id": transaction.transaction_id,
                 "transaction_amount": transaction.transaction_amount,
@@ -301,9 +346,32 @@ def logout_user(request):
     return redirect("/publicbanking/")
 
 def error_404_view(request, exception):
+    """
+    Handle any 400 Http status codes by displaying a page that provides information on the error in a
+    style consistent with the rest of the website.
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+        exception (django.urls.exceptions.Resolver404): Exception that is raised in case no view is provided
+    Returns:
+        render (django.http.response.HttpResponse): Django Http request to display 404 error page
+    
+    """
     context = {}
     return render(request, "publicbanking/error_400_view.html", context)
 
 def error_500_view(request, exception):
+    """
+    Handle any 500 Http status codes by displaying a page that provides information on the error in a
+    style consistent with the rest of the website.
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+        exception ???
+    Returns:
+        render (django.http.response.HttpResponse): Django Http request to display 500 error page
+    
+    """
+    print(type(exception))
     return render(request, "publicbanking/error_500_view.html", context)
 

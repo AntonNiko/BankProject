@@ -67,6 +67,22 @@ def fetch_accounts(clientCard):
         accounts_modified[i]["account_card"] = accounts[i].account_card
     return accounts_modified
 
+def fetch_account_type(accountNum):
+    """
+    Function that returns the accountType object related to the account number that is provided by the
+    parameter. Assumes that the user has been validated and is sending a legitimate request that calls
+    this function.
+
+    Args:
+        accountNum (int): User's account number
+    Returns:
+        accountType (publicbanking.models.AccountType): Account Type object with information about account's details
+
+    """
+    account = Account.objects.filter(account_number=accountNum)
+    accountType = list(AccountType.objects.filter(account_type__in=account))[0]
+    return accountType
+
 def fetch_accountTransactions(accountNum):
     """
     Function to return all the transaction related to an account number provided as a parameter. This
