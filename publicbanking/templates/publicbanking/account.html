@@ -28,21 +28,26 @@
 		});
 	</script>
 	<style>
-	.red-title {
-		color: #be4444;
-	}
-	.account-style {
-		background-color: #f9f9f9;
-	}
-	nav.navbar-dark {
-		background-color: #343a40;
-	}
-	.text-herb {
-		color: #626e60;
-	}
-	.text-terra {
-		color: #945D60;
-	}
+		.red-title {
+			color: #be4444;
+		}
+		.account-style {
+			background-color: #f9f9f9;
+		}
+		nav.navbar-dark {
+			background-color: #343a40;
+			border-radius: 5px;
+		}
+		.text-herb {
+			color: #626e60;
+		}
+		.text-terra {
+			color: #945D60;
+		}
+		.navbar-dark .navbar-nav .nav-link {
+			color: #ffffff;
+			font-weight: 500;
+		}
 	</style>
 </head>
 <body>
@@ -58,7 +63,7 @@
           <div class="col-4 d-flex justify-content-end align-items-center">
             <form action="/publicbanking/logout_user/" method="POST">
 			    {% csrf_token %}
-				<button class="btn btn-sm btn-outline-secondary" type="submit">Logout</button>
+				<button class="btn btn-primary" type="submit">Logout</button>
 			</form>
           </div>
         </div>
@@ -87,7 +92,7 @@
 		  </div>
 	  </nav>
 	  
-	  <div class="row mb-2">
+	  <div class="row mb-2" style="padding-top: 10px;">
 		<div class="col-12">
 			<a class="btn btn-primary" href="/publicbanking/" role="button">Return to Accounts</a>	
 		</div>

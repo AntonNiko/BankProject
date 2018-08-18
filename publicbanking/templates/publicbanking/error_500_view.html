@@ -11,21 +11,26 @@
 	<script type="text/javascript" src="{% static 'publicbanking/js/bootstrap.js' %}"></script>
 	<script src="{% static 'publicbanking/js/jquery-3.3.1.min.js' %}"></script>
 	<style>
-	.red-title {
-		color: #be4444;
-	}
-	.account-style {
-		background-color: #f9f9f9;
-	}
-	nav.navbar-dark {
-		background-color: #343a40;
-	}
-	.text-herb {
-		color: #626e60;
-	}
-	.text-terra {
-		color: #945D60;
-	}
+		.red-title {
+			color: #be4444;
+		}
+		.account-style {
+			background-color: #f9f9f9;
+		}
+		nav.navbar-dark {
+			background-color: #343a40;
+			border-radius: 5px;
+		}
+		.text-herb {
+			color: #626e60;
+		}
+		.text-terra {
+			color: #945D60;
+		}
+		.navbar-dark .navbar-nav .nav-link {
+			color: #ffffff;
+			font-weight: 500;
+		}
 	</style>
 </head>
 <body>
@@ -47,7 +52,7 @@
             </a>
 			<form action="/publicbanking/logout_user/" method="POST">
 			    {% csrf_token %}
-				<button class="btn btn-sm btn-outline-secondary" type="submit">Logout</button>
+				<button class="btn btn-primary" type="submit">Logout</button>
 			</form>
           </div>
         </div>
