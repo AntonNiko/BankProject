@@ -4,13 +4,13 @@ of providing functions to process requests sent by the browser. Contains functio
 both GET and POST requests.
 
 """
-from django.contrib.auth import login, logout
-from django.contrib.auth import authenticate
-from django.http import Http404, HttpResponse, JsonResponse
+from django import forms
+from django.contrib import messages
+from django.contrib.auth import login, logout, authenticate
 from django.db.models import Q
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from django import forms
 
 from .forms import LoginForm, RequestForm
 from .models import Account, Transaction, AccountType, WireTransaction
@@ -334,7 +334,7 @@ def login_user(request):
     post_data = dict(request.POST.items())
     ## If the card number contains any non-number entry, redirect back to login page
     if re.search("[a-zA-Z]", post_data["card_number"]):
-        print("Letter found...")
+        messages.add_message(request, messages.INFO, "Hello...")
         return redirect("/publicbanking/")
     
     card_number = post_data["card_number"]
@@ -395,6 +395,6 @@ def error_500_view(request, exception):
         render (django.http.response.HttpResponse): Django Http request to display 500 error page
     
     """
-    print(type(exception))
+    context = {}
     return render(request, "publicbanking/error_500_view.html", context)
 

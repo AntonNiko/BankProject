@@ -180,5 +180,3 @@ def validate_transfer_user(request, request_origin, request_destination):
     else:
         valid = True
     return valid
-   
-git commit -m "Added function validate_transfer_user() to utils.py to ensure user transfer request is legitimate"

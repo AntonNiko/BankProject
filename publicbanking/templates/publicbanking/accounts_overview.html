@@ -17,6 +17,15 @@
 		.account-style {
 			background-color: #f9f9f9;
 		}
+		nav.navbar-dark {
+			background-color: #343a40;
+		}
+		.text-herb {
+			color: #626e60;
+		}
+		.text-terra {
+			color: #945D60;
+		}
 	</style>
 </head>
 <body>
@@ -30,12 +39,6 @@
             <a class="blog-header-logo text-dark" href="#"><img src="{% static 'publicbanking/images/logo_bank.png' %}" alt="Jupiter Bank" class="img-responsive" style="max-width: 100%;max-height: 120px;"></a>
           </div>
           <div class="col-4 d-flex justify-content-end align-items-center">
-            <a class="text-muted" href="#">
-				<div class="input-group" style="padding-right: 10px;">
-					  <input class="form-control" type="search" placeholder="search" id="example-search-input">
-					  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="40" type="btn btn-sm btn-outline-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-3"><circle cx="10.5" cy="10.5" r="7.5"></circle><line x1="21" y1="21" x2="15.8" y2="15.8"></line></svg>
-				</div>
-            </a>
 			<form action="/publicbanking/logout_user/" method="POST">
 			    {% csrf_token %}
 				<button class="btn btn-sm btn-outline-secondary" type="submit">Logout</button>
@@ -43,23 +46,37 @@
           </div>
         </div>
       </header>
-
-      <div class="nav-scroller py-1 mb-2">
-        <nav class="nav d-flex justify-content-between">
-          <a class="p-2 text-muted" href="/publicbanking/accounts/">Accounts</a>
-          <a class="p-2 text-muted" href="/publicbanking/wire_transfers/">Wire Transfers</a>
-          <a class="p-2 text-muted" href="#">E-Transfers</a>
-		  <a class="p-2 text-muted" href="/publicbanking/currency_exchange/">Currency Exchange</a>
-        </nav>
-      </div>
 	  
-	  <div class="row mb-2">
+	  <nav class="navbar navbar-expand-lg navbar-dark">
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+			  <li class="nav-item active">
+				<a class="nav-link" href="/publicbanking/accounts/">Accounts</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="/publicbanking/wire_transfers/">Wire Transfers</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="#">E-Transfers</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="/publicbanking/currency_exchange/">Currency Exchange</a>
+			  </li>
+			</ul>
+			<form class="form-inline my-2 my-lg-0">
+			  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+			  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			</form>
+		  </div>
+	  </nav>
+	  
+	  <div class="row mb-2" style="padding-top: 10px;">
 	    <div class="col-12">
 		  <div class="card" style="width: 18rem;">
 			  <div class="card-body">
 				<h3 class="card-title red-title">Accounts</h3>
 				<h6 class="card-subtitle mb-2 text-muted">Account Balances</h6>
-				  <h3 class="mb-0">${{ total_balance }}</h3>
+				<h3 class="mb-0" style="color:black">${{ total_balance }}</h3>
 			  </div>
 		  </div>
         </div>		  
@@ -70,32 +87,27 @@
         <main class="col-8">
 		    <ul class="list-group">
 			<li class="list-group-item">
-				<div class="card flex-md-row mb-4 box-shadow h-md-250">
-					<div class="card-body d-flex flex-column align-items-start">
-						<h3 class="mb-0">
-							Deposit Accounts
-						</h3>					
-					</div>
-				</div>
+				<h3 class="mb-0 red-title">
+					Deposit Accounts
+				</h3>					
 			</li>
 			{% for account in accounts %}
 			<li class="list-group-item">
-				<div class="card flex-md-row mb-4 box-shadow h-md-250 account-style">
-					<div class="card-body d-flex flex-column align-items-start">
-					  <strong class="d-inline-block mb-2 text-primary">{{ account.account_type }}</strong>
-					  <h3 class="mb-0">
-						<a class="text-dark" href="/publicbanking/accounts/{{ account.account_number }} "> ${{ account.account_balance }}</a>
-					  </h3>
-					  <div class="mb-1 text-muted">{{ account.account_transitNum }}-{{ account.account_number }}</div>
-					  <p class="card-text mb-auto"></p>
-					</div>
-				</div>
+			  <a href="/publicbanking/accounts/{{ account.account_number }}">
+				  <strong class="d-inline-block mb-2 text-muted">{{ account.account_type }}</strong>
+				  <h3 class="mb-0" style="color:black"> ${{ account.account_balance }}</h3>
+				  <div class="mb-1 text-muted">{{ account.account_transitNum }}-{{ account.account_number }}</div>
+				  <p class="card-text mb-auto"></p>
+			  </a>
 			</li>
 			{% endfor %} 
 			</ul>
         </main>
         <aside class="col-12 col-md-4 p-0">
-            <nav class="navbar navbar-expand navbar-dark flex-md-column flex-row align-items-start">
+			<h5 class="mb-0 red-title">
+					Transfers
+			</h5>	
+            <nav class="navbar navbar-expand flex-md-column flex-row align-items-start">
                 <div class="collapse navbar-collapse">
 					<form action="/publicbanking/transfer_request/" method="POST">
 						{% csrf_token %}
@@ -139,7 +151,7 @@
             </nav>
 			<div class="card" style="width: 18rem;">
 			  <div class="card-body">
-				<h5 class="card-title">Account Details</h5>
+				<h5 class="card-title red-title">Account Details</h5>
 				<h6 class="card-subtitle mb-2 text-muted">Street</h6>
 				<p class="card-text">{{ account_holder.client_housenum }} {{ account_holder.client_streetname }}</p>
 				<h6 class="card-subtitle mb-2 text-muted">City</h6>

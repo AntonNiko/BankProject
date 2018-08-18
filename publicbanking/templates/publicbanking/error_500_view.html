@@ -10,6 +10,23 @@
 	<link href="{% static 'publicbanking/css/bootstrap.css' %}" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="{% static 'publicbanking/js/bootstrap.js' %}"></script>
 	<script src="{% static 'publicbanking/js/jquery-3.3.1.min.js' %}"></script>
+	<style>
+	.red-title {
+		color: #be4444;
+	}
+	.account-style {
+		background-color: #f9f9f9;
+	}
+	nav.navbar-dark {
+		background-color: #343a40;
+	}
+	.text-herb {
+		color: #626e60;
+	}
+	.text-terra {
+		color: #945D60;
+	}
+	</style>
 </head>
 <body>
 <div class="container">
@@ -36,14 +53,28 @@
         </div>
       </header>
 
-      <div class="nav-scroller py-1 mb-2">
-        <nav class="nav d-flex justify-content-between">
-          <a class="p-2 text-muted" href="/publicbanking/accounts/">Accounts</a>
-          <a class="p-2 text-muted" href="/publicbanking/wire_transfers/">Wire Transfers</a>
-          <a class="p-2 text-muted" href="#">E-Transfers</a>
-		  <a class="p-2 text-muted" href="/publicbanking/currency_exchange/">Currency Exchange</a>
-        </nav>
-      </div>
+      <nav class="navbar navbar-expand-lg navbar-dark">
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+			  <li class="nav-item">
+				<a class="nav-link" href="/publicbanking/accounts/">Accounts</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="/publicbanking/wire_transfers/">Wire Transfers</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="#">E-Transfers</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="/publicbanking/currency_exchange/">Currency Exchange</a>
+			  </li>
+			</ul>
+			<form class="form-inline my-2 my-lg-0">
+			  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+			  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			</form>
+		  </div>
+	  </nav>
 	  
 	  <div class="row mb-2">
 		<div class="col-12">
