@@ -8,6 +8,7 @@
     <meta name="description" content="" />
 
 	<link href="{% static 'publicbanking/css/bootstrap.css' %}" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="{% static 'publicbanking/css/font-awesome.css' %}">
 	<script type="text/javascript" src="{% static 'publicbanking/js/bootstrap.js' %}"></script>
 	<script src="{% static 'publicbanking/js/jquery-3.3.1.min.js' %}"></script>
 	<style>
@@ -30,6 +31,9 @@
 		.navbar-dark .navbar-nav .nav-link {
 			color: #ffffff;
 			font-weight: 500;
+		}
+		.fa-3 {
+			font-size: 3em;
 		}
 	</style>
 </head>
@@ -75,11 +79,9 @@
 		  </div>
 	  </nav>
 	  
-	  <div class="row mb-2">
-		<h3 class="mb-0 red-title">
-					Transfers
-		</h3>
-		<div class="col-12">
+	  <div class="row mb-2" style="padding-top: 10px;">
+		<div class="col-6">
+			<h3 class="mb-0 red-title">Transfers</h3>
 			<form action="/publicbanking/wire_transfer_request/" method="POST">
 				{% csrf_token %}
 				<div class="form-group">
@@ -126,6 +128,38 @@
 	
 				<button type="submit"0 class="btn btn-primary">Request Wire Transfer</button>	
 			</form>
+		</div>
+		<div class="col-6">
+			<h3 class="mb-0 red-title">How It Works</h3>
+			
+			<div class="row" style="padding-top:10px;">
+				<div class="col-4">
+					<i class="fa fa-pencil fa-3" aria-hidden="true"></i>
+				</div>
+				<div class="col-8">
+					<p>Enter all the information required by the form to request the transfer. </p>
+				</div>
+			</div>
+			
+			<div class="row" style="padding-top:10px;">
+				<div class="col-4">
+					<i class="fa fa-hourglass-end fa-3" aria-hidden="true"></i>
+				</div>
+				<div class="col-8">
+					<p>Your transfer request will be validated within 2 business days, after which your recipient will receive the funds promptly and securely*.</p>
+					<p><small class="text-muted">* Transfer fee applies for each transfer sent</small></p>
+				</div>
+			</div>
+	
+			<div class="row" style="padding-top:10px;">
+				<div class="col-4">
+					<i class="fa fa-money fa-3" aria-hidden="true"></i>
+				</div>
+				<div class="col-8">
+					<p>The funds are transferred, and records are kepte to track that very valuable transfer and all of it details</p>
+				</div>
+			</div>	
+			
 		</div>
 	  </div>
 </div>
