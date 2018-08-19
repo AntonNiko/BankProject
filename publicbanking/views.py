@@ -174,6 +174,7 @@ def transfer_request(request):
 
     ## If origin and destinationa accounts are the same, cancel the transfer and redirect
     if request_origin == request_destination:
+        messages.add_message(request, messages.ERROR, "Invalid Card Number")
         return redirect("/publicbanking/accounts")
 
     ## Finds the origin and destination account objects for the transaction object,
@@ -183,7 +184,8 @@ def transfer_request(request):
 
     ## If insufficient funds in origin account, redirect
     if (float(account_origin.account_balance) - float(request_amount)) < 0:
-        return redirect("/publicbanking/")
+        messages.add_message(request, messages.WARNING, "Origin and Destination accounts cannot be the same")
+        return redirect("/publicbanking/accounts/")
 
     ## Create transaction ID
     id_num=random.randint(1000000,99999999)
@@ -332,9 +334,10 @@ def login_user(request):
 
     ## Fetch the information sent by the login form, in the POST request
     post_data = dict(request.POST.items())
-    ## If the card number contains any non-number entry, redirect back to login page
+    ## If the card number contains any non-number entry, redirect back to login page with message
     if re.search("[a-zA-Z]", post_data["card_number"]):
-        messages.add_message(request, messages.INFO, "Hello...")
+        ## Append error message to request in order to show user
+        messages.add_message(request, messages.ERROR, "Invalid Card Number")
         return redirect("/publicbanking/")
     
     card_number = post_data["card_number"]
@@ -354,6 +357,10 @@ def login_user(request):
             response.set_cookie("card_number", request.user.username, max_age=30)
         return response
     else:
+        ## Append error message to request in order to show user in case no matches found in database
+        messages.add_message(request, messages.ERROR, """No accounts founds under current login. If you
+                             feel that this is not correct, please contact us as soon as possible so we
+                             can help you out.""")
         return redirect("/publicbanking/")
 
 def logout_user(request):
