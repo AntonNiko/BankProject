@@ -213,7 +213,8 @@ def transfer_request(request):
     account_origin.save()
     account_destination.account_balance = account_destination.account_balance + Decimal(request_amount)
     account_destination.save()
-    
+
+    messages.add_message(request, messages.SUCCESS, "Funds have been successfully transferred!")
     return redirect("/publicbanking/accounts")
 
 
@@ -306,6 +307,8 @@ def wire_transfer_request(request):
     ## Update balances, and save the objects to their databases
     account_origin.account_balance = account_origin.account_balance - Decimal(request_amount)
     account_origin.save()
+
+    messages.add_message(request, messages.SUCCESS, "Your Wire Transfer request has successfully been submitted! The final transaction will appear in the recipient's accounts within 2 business days.")
     return redirect("/publicbanking/accounts/")
 
 def transaction_info_request(request, num):
@@ -327,11 +330,13 @@ def transaction_info_request(request, num):
     
     if num>=INTERNET_TRANSFER_MIN_ID and num<=INTERNET_TRANSFER_MAX_ID:
         transaction_type = INTERNET_TRANSFER
-    elif num>=WIRE_TRANSFER_MIN_ID and num<=WIRE_TRANSFER_MIN_ID:
+        print("internet")
+    elif num>=WIRE_TRANSFER_MIN_ID and num<=WIRE_TRANSFER_MAX_ID:
         transaction_type = WIRE_TRANSFER
+        print("wire")
     else:
         transaction_type = None
-        
+        print("none")
 
     ## TODO: Ensure non-authenticated users are redirected
     response = {}
@@ -344,7 +349,8 @@ def transaction_info_request(request, num):
             "transaction_origin": list(transaction.transaction_origin.all())[0].account_number,
             "transaction_destination": list(transaction.transaction_destination.all())[0].account_number,
             "transaction_origin_balance": transaction.transaction_origin_balance,
-            "transaction_destination_balance": transaction.transaction_destination_balance
+            "transaction_destination_balance": transaction.transaction_destination_balance,
+            "transaction_type": "internet"
             } 
     elif transaction_type == WIRE_TRANSFER:
         transaction = WireTransaction.objects.get(transaction_id=num)
@@ -352,8 +358,13 @@ def transaction_info_request(request, num):
                     "transaction_amount": transaction.transaction_amount,
                     "transaction_time": transaction.transaction_time,
                     "transaction_name": transaction.transaction_name,
-                    "transaction_origin": transaction.transaction_origin,
-                    "transaction_origin_balance": transaction.transaction_origin_balance}
+                    "transaction_origin": list(transaction.transaction_origin.all())[0].account_number,
+                    "transaction_origin_balance": transaction.transaction_origin_balance,
+                    "transaction_destination_instNum": transaction.transaction_destination_instNum,
+                    "transaction_destination_routingNum": transaction.transaction_destination_routingNum,
+                    "transaction_destination_bankAddress": transaction.transaction_destination_bankAddress,
+                    "transaction_destination_accountNum": transaction.transaction_destination_accountNum,
+                    "transaction_type": "wire"}
     else:
         pass
             

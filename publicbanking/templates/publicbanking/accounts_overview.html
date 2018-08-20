@@ -79,6 +79,7 @@
 	    <div class="col-12">
 		  {% if messages %}
 			{% for message in messages %}
+				
 				{% if message.tags == "error" %}
 					<div class="alert alert-danger" role="alert">
 						Error: {{message}}
@@ -87,6 +88,10 @@
 					<div class="alert alert-warning" role="alert">
 						Warning: {{message}}
 					</div>
+				{% elif message.tags == "success" %}
+					<div class="alert alert-success" role="alert">
+						Success: {{message}}
+					</div>				
 				{% endif %}
 			{% endfor %}
 		  {% endif %}

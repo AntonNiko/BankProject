@@ -16,11 +16,27 @@
 				var transactionNum = $(this).val();
 				var jsonRequestLink = "/publicbanking/transaction_info/"+transactionNum
 				$.getJSON(jsonRequestLink, {}, function(data){
-					$("#transaction_origin").text(data.transaction_origin);
-					$("#transaction_destination").text(data.transaction_destination);
-					$("#transaction_amount").text("$"+data.transaction_amount);
-					$("#transaction_name").text(data.transaction_name);
-					$("#transaction_id").text(data.transaction_id);
+				
+				
+					if(data.transaction_type == "internet")
+					{
+						$("#transaction_origin").text(data.transaction_origin);
+						$("#transaction_destination").text(data.transaction_destination);
+						$("#transaction_amount").text("$"+data.transaction_amount);
+						$("#transaction_name").text(data.transaction_name);
+						$("#transaction_id").text(data.transaction_id);					
+					}else if(data.transaction_type == "wire")
+					{
+						$("#transaction_origin").text(data.transaction_origin);
+						$("#transaction_destination").text(data.transaction_destination_instNum + " - " + data.transaction_destination_routingNum + " - " + data.transaction_destination_accountNum);
+						$("#transaction_amount").text("$"+data.transaction_amount);
+						$("#transaction_name").text(data.transaction_name);
+						$("#transaction_id").text(data.transaction_id);						
+					}else 
+					{
+						
+					}
+
 				});
 				e.preventDefault;
 				$("#transactionmodal").modal("show");
@@ -100,7 +116,6 @@
 		</div>
 	  </div>
 
-	  <div class="row mb-2">
 		 <div class="col-md-6">
 			<div class="card flex-md-row mb-4 box-shadow h-md-250">
 				  <div class="card-body d-flex flex-column align-items-start">
@@ -169,7 +184,7 @@
 					<p class="card-text" id="transaction_destination"></p>
 					<h6 class="card-subtitle mb-2 text-muted">Transaction Amount</h6>
 					<p class="card-text" id="transaction_amount"></p>
-					<h6 class="card-subtitle mb-2 text-muted">Transaction name</h6>
+					<h6 class="card-subtitle mb-2 text-muted">Transaction Name</h6>
 					<p class="card-text" id="transaction_name"></p>
 					<h6 class="card-subtitle mb-2 text-muted">Transaction ID</h6>
 					<p class="card-text" id="transaction_id"></p>
