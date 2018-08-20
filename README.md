@@ -65,12 +65,12 @@ Since the request object handles the logged in status on behalf of the developer
 ### Models
 
 In ```models.py```, we can see that several models are defined and sued within the application:
-* Client - Represents a physical person who is registered as a bank's client
-* Account - Represents a bank account that is owned by a client. It is linked to a card number and account type
-* AccountType - Stores the different bank account types available to Clients
-* BufferAccount - Represents an account owned by the bank, with the purpose of processing outgoing and incoming transactions
-* Transaction - Object that represents an amount of money transferred from one account to another
-* WireTransaction - Object that represents an amount of money transferred from one account to an external account
+* **Client** - Represents a physical person who is registered as a bank's client
+* **Account** - Represents a bank account that is owned by a client. It is linked to a card number and account type
+* **AccountType** - Stores the different bank account types available to Clients
+* **BufferAccount** - Represents an account owned by the bank, with the purpose of processing outgoing and incoming transactions
+* **Transaction** - Object that represents an amount of money transferred from one account to another
+* **WireTransaction** - Object that represents an amount of money transferred from one account to an external account
 
 **Note**: A wire transfer requires different information than a simple transaction, such as institution number and recipient's address, thus the need for a separate model
 
@@ -84,8 +84,7 @@ In ```models.py```, we can see that several models are defined and sued within t
 
 ## Gallery
 
-This section includes animations that show the website in operation, including several important actions usch as requesting transfers, viewing accounts, and checking user authentication
-
+This section includes animations that show the website in operation, including several important actions usch as requesting transfers, viewing accounts, and checking user authentication. 
 
 ### Login 
 ![Login Animation](img/gifs/login-animation.gif)
@@ -104,7 +103,10 @@ This section includes animations that show the website in operation, including s
 
 It is important to test each of the website's components in order to ensure that no errors or unexpected behaviours arise. This can make user experience frustrating and confusing, as well as allow people to potentially hack into sensitive parts of the system and tinker with their inner workings. An effective way of testing such behaviours with this website would be to use a testing suite, [Selenium](https://www.seleniumhq.org/) being a very good contender. 
 
-TODO: Add test runs with selenium
+In this project, Selenium is installed with Anaconda:
+```
+conda install selenium 
+```
 
 ### Currency Exchange Information
 
