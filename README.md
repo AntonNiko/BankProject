@@ -88,17 +88,13 @@ This section includes animations that show the website in operation, including s
 
 
 ### Login 
-
-
-### Logout
-
+![Login Animation](img/gifs/login-animation.gif)
 
 ### User Authentication Redirect
-
+![Login Error Animation](img/gifs/login-error-animation.gif)
 
 ### Transfer Request
 ![Transfer Request Animation](img/gifs/transfer-animation.gif)
-
 
 ### Currency Exchange
 
