@@ -76,6 +76,57 @@
 	  </nav>
 	  
 	  <div class="row mb-2">
+	  		<div class="col-6">
+				<h3 class="mb-0 red-title">Currency Exchange</h3>
+				<div>
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="request_origin">Origin:</label>
+						<select class="form-control" id="request_origin" name="request_origin">
+						  {% for account in account_choices %}
+						  <option value="{{ account.account_number }}">{{ account }}</option>
+						  {% endfor %}
+						</select>					
+					</div>
+					<div class="form-group">
+						<label for="request_amount">Exchange Amount:</label>
+						<div class="input-group mb-2">
+						<div class="input-group-prepend">
+						  <div class="input-group-text">$</div>
+						</div>
+						<input type="text" class="form-control" id="request_amount" name="request_amount">
+						</div>						
+					</div>
+					<div class="form-group">
+						<label for="request_origin">Origin Currency:</label>
+						<select class="form-control" id="origin_currency" name="request_origin">
+						  {% for currency in currencies %}
+						  <option value="{{currency}}">{{ currency }}</option>
+						  {% endfor %}
+						</select>					
+					</div>
+					<div class="form-group">
+						<label for="request_origin">Destination Currency:</label>
+						<select class="form-control" id="destination_currency" name="request_origin">
+						  {% for currency in currencies %}
+						  <option value="{{currency}}">{{ currency }}</option>
+						  {% endfor %}
+						</select>					
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" id="request_amount" name="request_amount" disabled>					
+					</div>
+					<button type="submit" id="exchange_calculate_button" class="btn btn-primary">Calculate</button>	
+				</div>
+				<script>
+					$("#exchange_calculate_button").click(function(){
+						request_amount = $("#request_amount").val();
+						origin_currency = $("#origin_currency").val();
+						destination_currency = $("#destination_currency").val();
+						
+					});
+				</script>
+			</div>
 	  </div>
 </div>
 </body>

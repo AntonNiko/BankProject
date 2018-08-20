@@ -125,7 +125,7 @@ def wire_transfers(request):
     ## Finds the account holder's name related to the card used for the login, and logouts the user if either, the username
     ## (card number) is not a number, or the account search results in no matches found
     try:
-        card_account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
+        account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
     except ValueError:
         logout(request)
         return redirect("/publicbanking/")
@@ -133,10 +133,10 @@ def wire_transfers(request):
         logout(request)
         return redirect("/publicbanking/")
 
-    ## Finds all accounts associated with the card's account holder, to display in wire transfer request form
-    account_holder_accounts = list(Account.objects.filter(account_holder = card_account_holder)) 
+    ## Finds all accounts associated with the card's account holder, to display in transfer request form
+    account_choices = list(Account.objects.filter(account_holder = account_holder)) 
     
-    context = {"account_choices":account_holder_accounts}
+    context = {"account_choices":account_choices}
     return render(request, "publicbanking/wire_transfers.html", context)
 
 
@@ -174,7 +174,7 @@ def transfer_request(request):
 
     ## If origin and destinationa accounts are the same, cancel the transfer and redirect
     if request_origin == request_destination:
-        messages.add_message(request, messages.ERROR, "Invalid Card Number")
+        messages.add_message(request, messages.WARNING, "Origin and Destination accounts cannot be the same")
         return redirect("/publicbanking/accounts")
 
     ## Finds the origin and destination account objects for the transaction object,
@@ -184,7 +184,7 @@ def transfer_request(request):
 
     ## If insufficient funds in origin account, redirect
     if (float(account_origin.account_balance) - float(request_amount)) < 0:
-        messages.add_message(request, messages.WARNING, "Origin and Destination accounts cannot be the same")
+        messages.add_message(request, messages.WARNING, "Insufficient funds in origin account for transfer")
         return redirect("/publicbanking/accounts/")
 
     ## Create transaction ID
@@ -223,8 +223,24 @@ def currency_exchange(request):
     """
     if not request.user.is_authenticated:
         return redirect("/publicbanking/")
+
+    ## Finds the account holder's name related to the card used for the login, and logouts the user if either, the username
+    ## (card number) is not a number, or the account search results in no matches found
+    try:
+        account_holder = Account.objects.filter(account_card = int(request.user.username))[0].account_holder
+    except ValueError:
+        logout(request)
+        return redirect("/publicbanking/")
+    except Account.DoesNotExist:
+        logout(request)
+        return redirect("/publicbanking/")
+
+    ## Finds all accounts associated with the card's account holder, to display in transfer request form
+    account_choices = list(Account.objects.filter(account_holder = account_holder))
+    currencies = ["AUD","CAD","CHF","EUR","GBP","JPY","NZD","USD"]
+
     
-    context = {}
+    context = {"account_choices":account_choices, "currencies":currencies}
     return render(request, "publicbanking/currency_exchange.html", context)
 
 def wire_transfer_request(request):
@@ -319,6 +335,9 @@ def transaction_info_request(request, num):
                 "transaction_destination_balance": transaction.transaction_destination_balance
                 }
     return JsonResponse(response)
+
+def currency_exchange_request(request):
+    pass
 
 
 ## Login request (no HTML code visual)
