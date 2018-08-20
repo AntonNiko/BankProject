@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.conf.urls import handler404, handler500
+from django.conf.urls import handler403, handler404, handler500
 
 
 urlpatterns = [
@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
+handler403 = "publicbanking.views.error_403_view"
 handler404 = "publicbanking.views.error_404_view"
 handler500 = "publicbanking.views.error_500_view"

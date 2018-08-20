@@ -8,7 +8,7 @@ from django import forms
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.db.models import Q
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
@@ -18,6 +18,14 @@ from .utils import *
 
 from decimal import Decimal
 import random, re
+
+INTERNET_TRANSFER_MIN_ID = 1000000
+INTERNET_TRANSFER_MAX_ID = 9999999
+WIRE_TRANSFER_MIN_ID = 100000000
+WIRE_TRANSFER_MAX_ID = 199999999
+
+INTERNET_TRANSFER = 0
+WIRE_TRANSFER = 1
 
 # Create your views here.
 def index(request):
@@ -188,7 +196,7 @@ def transfer_request(request):
         return redirect("/publicbanking/accounts/")
 
     ## Create transaction ID
-    id_num=random.randint(1000000,99999999)
+    id_num=random.randint(INTERNET_TRANSFER_MIN_ID, INTERNET_TRANSFER_MAX_ID)
     ## Process transaction
     transaction = Transaction.objects.create(transaction_id=id_num,
                               transaction_amount = request_amount,
@@ -279,7 +287,7 @@ def wire_transfer_request(request):
     ## Finds the origin account object for the wire transaction object, and update balances
     account_origin = Account.objects.get(account_number=request_origin)
     ## Create transaction ID
-    id_num=random.randint(100000000,199999999)
+    id_num=random.randint(WIRE_TRANSFER_MIN_ID, WIRE_TRANSFER_MAX_ID)
     wire_transaction = WireTransaction.objects.create(transaction_id=id_num,
                                                       transaction_amount = request_amount,
                                                       transaction_time = timezone.now(),
@@ -316,24 +324,39 @@ def transaction_info_request(request, num):
     if request.method != "GET":
         return redirect("/publicbanking/")
 
-    ## TODO: Ensure non-authenticated users are redirected
-    try:
-        transaction = Transaction.objects.get(transaction_id=num)
-    except Transaction.DoesNotExist:
-        try:
-             transaction = WireTransaction.objects.get(transaction_id=num)
-        except:
-            transaction = None
+    
+    if num>=INTERNET_TRANSFER_MIN_ID and num<=INTERNET_TRANSFER_MAX_ID:
+        transaction_type = INTERNET_TRANSFER
+    elif num>=WIRE_TRANSFER_MIN_ID and num<=WIRE_TRANSFER_MIN_ID:
+        transaction_type = WIRE_TRANSFER
+    else:
+        transaction_type = None
+        
 
-    response = {"transaction_id": transaction.transaction_id,
-                "transaction_amount": transaction.transaction_amount,
-                "transaction_time": transaction.transaction_time,
-                "transaction_name": transaction.transaction_name,
-                "transaction_origin": list(transaction.transaction_origin.all())[0].account_number,
-                "transaction_destination": list(transaction.transaction_destination.all())[0].account_number,
-                "transaction_origin_balance": transaction.transaction_origin_balance,
-                "transaction_destination_balance": transaction.transaction_destination_balance
-                }
+    ## TODO: Ensure non-authenticated users are redirected
+    response = {}
+    if transaction_type == INTERNET_TRANSFER:
+        transaction = Transaction.objects.get(transaction_id=num)
+        response = {"transaction_id": transaction.transaction_id,
+            "transaction_amount": transaction.transaction_amount,
+            "transaction_time": transaction.transaction_time,
+            "transaction_name": transaction.transaction_name,
+            "transaction_origin": list(transaction.transaction_origin.all())[0].account_number,
+            "transaction_destination": list(transaction.transaction_destination.all())[0].account_number,
+            "transaction_origin_balance": transaction.transaction_origin_balance,
+            "transaction_destination_balance": transaction.transaction_destination_balance
+            } 
+    elif transaction_type == WIRE_TRANSFER:
+        transaction = WireTransaction.objects.get(transaction_id=num)
+        response = {"transaction_id": transaction.transaction_id,
+                    "transaction_amount": transaction.transaction_amount,
+                    "transaction_time": transaction.transaction_time,
+                    "transaction_name": transaction.transaction_name,
+                    "transaction_origin": transaction.transaction_origin,
+                    "transaction_origin_balance": transaction.transaction_origin_balance}
+    else:
+        pass
+            
     return JsonResponse(response)
 
 def currency_exchange_request(request):
@@ -393,6 +416,21 @@ def logout_user(request):
     
     logout(request)
     return redirect("/publicbanking/")
+
+def error_403_view(request, exception):
+    """
+    Handle any 400 Http status codes by displaying a page that provides information on the error in a
+    style consistent with the rest of the website.
+
+    Args:
+        request (django.core.handlers.wsgi.WSGIRequest): Django request
+        exception (django.urls.exceptions.Resolver404): Exception that is raised in case no view is provided
+    Returns:
+        render (django.http.response.HttpResponse): Django Http request to display 404 error page
+    
+    """
+    context = {}
+    return render(request, "publicbanking/error_403_view.html", context)
 
 def error_404_view(request, exception):
     """
