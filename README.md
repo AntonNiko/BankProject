@@ -79,6 +79,7 @@ In ```models.py```, we can see that several models are defined and sued within t
 **Login**: When a POST request is sent from the home page or the login modal, int is handled by ```publicbanking/view.py``` function login_user(request) function. By using Django's built-in authenticate() function and other statements for validation, it either recognizes the user as logged in and redirects them to their accounts overview page, or redirects them back to the login page.
 **Logout**: When a user submits a POST request to logout, it calls the logout(request) function and redirects user to the login page.
 **Transfer Request**: Logged in users can submit transfer requests between their accounts. It ensures that no transfers take place if there are insuficcient funds, and creates a transaction objects with record-keeping variables such as the running balance of each account
+**Currency Exchange Information**: Logged in users can enter any amount from any of their bank accounts, and select a currency that they wish to convert this amount into. That displays
 
 
 ## Gallery
@@ -98,9 +99,20 @@ This section includes animations that show the website in operation, including s
 ### Transfer Request
 ![Transfer Request Animation](img/gifs/transfer-animation.gif)
 
+
+### Currency Exchange
+
 ## Notes
 
-Explain how to run the automated tests for this system
+### Testing
+
+It is important to test each of the website's components in order to ensure that no errors or unexpected behaviours arise. This can make user experience frustrating and confusing, as well as allow people to potentially hack into sensitive parts of the system and tinker with their inner workings. An effective way of testing such behaviours with this website would be to use a testing suite, [Selenium](https://www.seleniumhq.org/) being a very good contender. 
+
+TODO: Add test runs with selenium
+
+### Currency Exchange Information
+
+
 
 ## Related
 
@@ -110,6 +122,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
