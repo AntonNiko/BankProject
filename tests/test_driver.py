@@ -16,8 +16,7 @@ class Driver():
         self.driver = webdriver.Chrome()
         self.loadLoginFile(LOGIN_TESTS_FILE)
         self.driver.get("http://127.0.0.1:8080/publicbanking/")
-
-        self.enterLoginInformation("450645537840221","a1n3t8n1515haha52")
+        
         self.submitLoginInformation()
 
     def enterLoginInformation(self, card, password):
