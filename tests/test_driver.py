@@ -8,12 +8,14 @@ import manage
 CHROME_DRIVER_PATH = "chromedriver.exe"
 FIREFOX_DRIVER_PATH = "geckodriver.exe"
 
+LOGIN_TESTS_FILE = "login_tests.txt"
+
 class Driver():
 
     def __init__(self, driver_exe_path):
         self.driver = webdriver.Chrome()
+        self.loadLoginFile(LOGIN_TESTS_FILE)
         self.driver.get("http://127.0.0.1:8080/publicbanking/")
-
 
         self.enterLoginInformation("450645537840221","a1n3t8n1515haha52")
         self.submitLoginInformation()
@@ -31,12 +33,10 @@ class Driver():
 
     def loadLoginFile(self, filename):
         self.loginInfo = []
-        with open(filename, "w") as f:
+        with open(filename, "r") as f:
             for line in f:
                 self.loginInfo.append(line.split(","))
-            
-            
-        
+        print(self.loginInfo)
         
         
 if __name__ == "__main__":
