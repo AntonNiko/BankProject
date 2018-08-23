@@ -380,6 +380,10 @@ def login_user(request):
     Handles POST requests to /publicbanking/login_user/. Processes login requests from the form
     LoginForm to authenticate a user with their card number and password. If login is invalid,
     redirect them to the login page again.
+    
+    Returns:
+        redirect (django.http.response.HttpResponse): Redirect HttpResponse object depending on the success of loign request
+
     """
     ## Redirect user if not POST, since consistent with a form submission
     if request.method != "POST":
@@ -420,6 +424,9 @@ def logout_user(request):
     """
     Processes logout requests for the website. Once the user is logged out, redirect them to the
     login page.
+
+    Returns:
+        redirect (django.http.response.HttpResponse): Redirect HttpResponse object for the logout function
     """
     ## Redirect user if not POST, since consistent with a form submission
     if request.method != "POST":
