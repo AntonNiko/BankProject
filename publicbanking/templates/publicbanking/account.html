@@ -22,14 +22,14 @@
 					{
 						$("#transaction_origin").text(data.transaction_origin);
 						$("#transaction_destination").text(data.transaction_destination);
-						$("#transaction_amount").text("$"+data.transaction_amount);
+						$("#transaction_amount").text(data.transaction_amount);
 						$("#transaction_name").text(data.transaction_name);
 						$("#transaction_id").text(data.transaction_id);					
 					}else if(data.transaction_type == "wire")
 					{
 						$("#transaction_origin").text(data.transaction_origin);
 						$("#transaction_destination").text(data.transaction_destination_instNum + " - " + data.transaction_destination_routingNum + " - " + data.transaction_destination_accountNum);
-						$("#transaction_amount").text("$"+data.transaction_amount);
+						$("#transaction_amount").text(data.transaction_amount);
 						$("#transaction_name").text(data.transaction_name);
 						$("#transaction_id").text(data.transaction_id);						
 					}else 
@@ -148,14 +148,14 @@
 				<th scope="row">{{ transaction.transaction_time }}</th>
 				<td>{{ transaction.transaction_name }}</td>
 				{% if transaction.transaction_origin == account.account_number %}
-					<td>${{ transaction.transaction_amount }}</td>
+					<td>{{ transaction.transaction_amount }}</td>
 					<td></td>
-					<td>${{ transaction.transaction_origin_balance}}</td>
+					<td>{{ transaction.transaction_origin_balance}}</td>
 					<td><button type="button" class="btn btn-outline-info transactionmodal_class" value="{{ transaction.transaction_id }}" data-toggle="modal" data-target="#transactionmodal">View</button></td>
 				{% elif transaction.transaction_destination == account.account_number %}
 					<td></td>
-					<td>${{ transaction.transaction_amount }}</td>	
-					<td>${{ transaction.transaction_destination_balance}}</td>
+					<td>{{ transaction.transaction_amount }}</td>	
+					<td>{{ transaction.transaction_destination_balance}}</td>
 					<td><button type="button" class="btn btn-outline-info transactionmodal_class" value="{{ transaction.transaction_id }}" data-toggle="modal" data-target="#transactionmodal">View</button></td>
                 {% else %}
                     <td></td>

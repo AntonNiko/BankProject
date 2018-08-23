@@ -109,13 +109,13 @@ def fetch_accountTransactions(accountNum):
     for i in range(len(transactions)):
         transactions_modified.append({})
         transactions_modified[i]["transaction_id"] = transactions[i].transaction_id
-        transactions_modified[i]["transaction_amount"] = transactions[i].transaction_amount
+        transactions_modified[i]["transaction_amount"] = "${:,.2f}".format(transactions[i].transaction_amount)
         transactions_modified[i]["transaction_time"] = transactions[i].transaction_time
         transactions_modified[i]["transaction_name"] = transactions[i].transaction_name
         transactions_modified[i]["transaction_origin"] = list(transactions[i].transaction_origin.all())[0].account_number
         transactions_modified[i]["transaction_destination"] = list(transactions[i].transaction_destination.all())[0].account_number
-        transactions_modified[i]["transaction_origin_balance"] = transactions[i].transaction_origin_balance
-        transactions_modified[i]["transaction_destination_balance"] = transactions[i].transaction_destination_balance
+        transactions_modified[i]["transaction_origin_balance"] = "${:,.2f}".format(transactions[i].transaction_origin_balance)
+        transactions_modified[i]["transaction_destination_balance"] = "${:,.2f}".format(transactions[i].transaction_destination_balance)
 
     ## Search for any wire transactions for that account
     try:
@@ -127,11 +127,11 @@ def fetch_accountTransactions(accountNum):
     for i in range(len(wire_transactions)):
         wire_transactions_modified.append({})
         wire_transactions_modified[i]["transaction_id"] = wire_transactions[i].transaction_id
-        wire_transactions_modified[i]["transaction_amount"] = wire_transactions[i].transaction_amount
+        wire_transactions_modified[i]["transaction_amount"] = "${:,.2f}".format(wire_transactions[i].transaction_amount)
         wire_transactions_modified[i]["transaction_time"] = wire_transactions[i].transaction_time
         wire_transactions_modified[i]["transaction_name"] = wire_transactions[i].transaction_name
         wire_transactions_modified[i]["transaction_origin"] = list(wire_transactions[i].transaction_origin.all())[0].account_number
-        wire_transactions_modified[i]["transaction_origin_balance"] = wire_transactions[i].transaction_origin_balance
+        wire_transactions_modified[i]["transaction_origin_balance"] = "${:,.2f}".format(wire_transactions[i].transaction_origin_balance)
 
     ## Add any wire transactions found to the original transactions_modified list 
     transactions_modified.extend(wire_transactions_modified)

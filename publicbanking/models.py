@@ -80,8 +80,9 @@ class Transaction(models.Model):
     transaction_name = models.CharField(max_length=200)
     transaction_origin = models.ManyToManyField(Account, related_name = "transaction_origin")
     transaction_destination = models.ManyToManyField(Account, related_name = "transaction_destination+")
-    transaction_origin_balance = models.DecimalField (max_digits=20, decimal_places=2,default=None)
-    transaction_destination_balance = models.DecimalField (max_digits=20, decimal_places=2, default=None)
+    transaction_origin_balance = models.DecimalField(max_digits=20, decimal_places=2,default=None)
+    transaction_destination_balance = models.DecimalField(max_digits=20, decimal_places=2, default=None)
+    transaction_frequency = models.CharField(max_length=9, choices=(("ONCE","o"),("DAILY","d"),("WEEKLY","w"),("MONTHLY","m"),), default="ONCE")
 
     def __str__(self):
         return str(self.transaction_id)+"-"+str(self.transaction_origin)+"-"+str(self.transaction_destination)

@@ -174,6 +174,7 @@ def transfer_request(request):
     request_origin = post_data["request_origin"]
     request_destination = post_data["request_destination"]
     request_frequency = post_data["request_frequency"]
+    print(request_frequency)
 
     ## Checks that both the origin and destination accounts are both owned by the logged in user
     if not validate_transfer_user(request, request_origin, request_destination):
@@ -343,23 +344,23 @@ def transaction_info_request(request, num):
     if transaction_type == INTERNET_TRANSFER:
         transaction = Transaction.objects.get(transaction_id=num)
         response = {"transaction_id": transaction.transaction_id,
-            "transaction_amount": transaction.transaction_amount,
+            "transaction_amount": "${:,.2f}".format(transaction.transaction_amount),
             "transaction_time": transaction.transaction_time,
             "transaction_name": transaction.transaction_name,
             "transaction_origin": list(transaction.transaction_origin.all())[0].account_number,
             "transaction_destination": list(transaction.transaction_destination.all())[0].account_number,
-            "transaction_origin_balance": transaction.transaction_origin_balance,
-            "transaction_destination_balance": transaction.transaction_destination_balance,
+            "transaction_origin_balance": "${:,.2f}".format(transaction.transaction_origin_balance),
+            "transaction_destination_balance": "${:,.2f}".format(transaction.transaction_destination_balance),
             "transaction_type": "internet"
             } 
     elif transaction_type == WIRE_TRANSFER:
         transaction = WireTransaction.objects.get(transaction_id=num)
         response = {"transaction_id": transaction.transaction_id,
-                    "transaction_amount": transaction.transaction_amount,
+                    "transaction_amount": "${:,.2f}".format(transaction.transaction_amount),
                     "transaction_time": transaction.transaction_time,
                     "transaction_name": transaction.transaction_name,
                     "transaction_origin": list(transaction.transaction_origin.all())[0].account_number,
-                    "transaction_origin_balance": transaction.transaction_origin_balance,
+                    "transaction_origin_balance": "${:,.2f}".format(transaction.transaction_origin_balance),
                     "transaction_destination_instNum": transaction.transaction_destination_instNum,
                     "transaction_destination_routingNum": transaction.transaction_destination_routingNum,
                     "transaction_destination_bankAddress": transaction.transaction_destination_bankAddress,
