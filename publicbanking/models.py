@@ -85,7 +85,7 @@ class Transaction(models.Model):
     transaction_frequency = models.CharField(max_length=9, choices=(("ONCE","o"),("DAILY","d"),("WEEKLY","w"),("MONTHLY","m"),), default="ONCE")
 
     def __str__(self):
-        return str(self.transaction_id)+"-"+str(self.transaction_origin)+"-"+str(self.transaction_destination)
+        return str(self.transaction_id)+"-"+str(list(self.transaction_origin.all())[0].account_number)+"-"+str(list(self.transaction_destination.all())[0].account_number)
 
 class WireTransaction(models.Model):
     """

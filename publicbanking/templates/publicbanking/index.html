@@ -165,22 +165,22 @@
 					{% csrf_token %}
 					  <div class="form-group">
 						<label for="card_number">Card Number</label>
-						<input type="text" class="form-control" id="card_number" name="card_number">
+						<input type="text" class="form-control" id="card_number_modal" name="card_number">
 						<small id="emailHelp" class="form-text text-muted">Your information will always be secure with us.</small>
 					  </div>
 					  <div class="form-group">
 						<label for="card_password">Password</label>
-						<input type="password" class="form-control" id="card_password" name="card_password">
+						<input type="password" class="form-control" id="card_password_modal" name="card_password">
 					  </div>
 					  <div class="form-check">
-						<input type="checkbox" class="form-check-input" id="remember_card" name="remember_card">
+						<input type="checkbox" class="form-check-input" id="remember_card_modal" name="remember_card">
 						<label class="form-check-label" for="remember_card">Remember card for future use?</label>
 					  </div>
 					  <button type="submit" class="btn btn-primary">Login</button>
 				   </form>				
 			  </div>
 			  <div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" id="login_submit_modal">Cancel</button>
 			  </div>
 			</div>
 		  </div>
